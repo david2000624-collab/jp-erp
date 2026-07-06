@@ -22,9 +22,21 @@
             <h1 data-i18n="loginTitle">代購 ERP</h1>
           </div>
         </div>
-        <label class="field"><span data-i18n="language">語言</span><select id="loginLang"><option value="zh">中文</option><option value="ja">日本語</option></select></label>
-        <label class="field"><span data-i18n="account">帳號</span><input id="username" autocomplete="username" inputmode="text" placeholder="kosei / cho" /></label>
-        <label class="field"><span data-i18n="password">密碼</span><input id="password" autocomplete="current-password" inputmode="numeric" type="password" placeholder="0000" /></label>
+        <label class="field">
+          <span data-i18n="language">語言</span>
+          <select id="loginLang">
+            <option value="zh">中文</option>
+            <option value="ja">日本語</option>
+          </select>
+        </label>
+        <label class="field">
+          <span data-i18n="account">帳號</span>
+          <input id="username" autocomplete="username" inputmode="text" placeholder="kosei / cho" />
+        </label>
+        <label class="field">
+          <span data-i18n="password">密碼</span>
+          <input id="password" autocomplete="current-password" inputmode="numeric" type="password" placeholder="0000" />
+        </label>
         <p id="loginError" class="form-error" aria-live="polite"></p>
         <button id="loginBtn" class="primary-button" type="button" data-i18n="login">登入</button>
       </div>
@@ -32,9 +44,15 @@
 
     <section id="appShell" class="app-shell hidden">
       <header class="mobile-header">
-        <div><p class="kicker" data-i18n="todayWork">今日工作</p><h1 data-i18n="dashboard">總覽</h1></div>
+        <div>
+          <p class="kicker" data-i18n="todayWork">今日工作</p>
+          <h1 data-i18n="dashboard">總覽</h1>
+        </div>
         <div class="header-actions">
-          <select id="appLang" aria-label="Language"><option value="zh">中文</option><option value="ja">日本語</option></select>
+          <select id="appLang" aria-label="Language">
+            <option value="zh">中文</option>
+            <option value="ja">日本語</option>
+          </select>
           <button id="logoutBtn" class="ghost-button" type="button" data-i18n="logout">登出</button>
         </div>
       </header>
@@ -57,18 +75,32 @@
         </section>
 
         <section id="orders" class="view active">
-          <div class="section-title"><h2 data-i18n="orders">訂單</h2><button class="small-button" data-open-form="orderForm" type="button" data-i18n="addOrder">新增訂單</button></div>
+          <div class="section-title">
+            <h2 data-i18n="orders">訂單</h2>
+            <button class="small-button" data-open-form="orderForm" type="button" data-i18n="addOrder">新增訂單</button>
+          </div>
           <form id="orderForm" class="quick-form hidden" data-collection="orders">
             <input data-field="customer" data-i18n-placeholder="customerName" placeholder="客戶姓名" />
-            <input data-field="item" data-i18n-placeholder="itemName" placeholder="商品名稱" />
-            <select data-field="status"><option value="報價中">報價中</option><option value="待付款">待付款</option><option value="已採購">已採購</option><option value="已入庫">已入庫</option></select>
+            <select id="orderProduct" data-field="productId"></select>
+            <input id="orderQuantity" data-field="quantity" inputmode="numeric" data-i18n-placeholder="quantity" placeholder="數量" />
+            <input id="orderUnitPrice" data-field="unitPrice" inputmode="numeric" data-i18n-placeholder="unitPrice" placeholder="單價 JPY" />
+            <select data-field="status">
+              <option value="報價中">報價中</option>
+              <option value="待付款">待付款</option>
+              <option value="已採購">已採購</option>
+              <option value="已入庫">已入庫</option>
+            </select>
+            <div class="form-total"><span data-i18n="orderTotal">訂單總額</span><strong id="orderTotalPreview">¥0</strong></div>
             <button class="primary-button" type="submit" data-i18n="save">儲存</button>
           </form>
           <div id="orderList" class="list"></div>
         </section>
 
         <section id="products" class="view">
-          <div class="section-title"><h2 data-i18n="products">商品</h2><button class="small-button" data-open-form="productForm" type="button" data-i18n="addProduct">新增商品</button></div>
+          <div class="section-title">
+            <h2 data-i18n="products">商品</h2>
+            <button class="small-button" data-open-form="productForm" type="button" data-i18n="addProduct">新增商品</button>
+          </div>
           <form id="productForm" class="quick-form hidden" data-collection="products">
             <input data-field="name" data-i18n-placeholder="itemName" placeholder="商品名稱" />
             <input data-field="customer" data-i18n-placeholder="customerName" placeholder="客戶姓名" />

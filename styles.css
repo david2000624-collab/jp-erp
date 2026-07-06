@@ -303,6 +303,27 @@ h2 {
   grid-template-columns: 1fr;
 }
 
+.form-total {
+  display: grid;
+  gap: 4px;
+  min-height: 44px;
+  align-content: center;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+}
+
+.form-total span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.form-total strong {
+  font-size: 17px;
+}
+
 .list {
   display: grid;
   gap: 10px;

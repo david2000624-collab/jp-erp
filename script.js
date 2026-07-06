@@ -6,7 +6,8 @@ const translations = {
     todayWork: "今日工作", dashboard: "總覽", pendingOrders: "待處理訂單", warehouseItems: "倉庫包裹", unpaidCustomers: "未付款客戶", advanceTotal: "代墊總額",
     orders: "訂單", products: "商品", packages: "包裹", shipping: "出貨", customers: "客戶", accounting: "對帳",
     addOrder: "新增訂單", addProduct: "新增商品", addPackage: "新增包裹", addShipment: "新增出貨", addCustomer: "新增客戶", addPayment: "新增付款",
-    save: "儲存", saveRate: "儲存匯率", edit: "修改", delete: "刪除", customerName: "客戶姓名", itemName: "商品名稱", priceYen: "商品金額 JPY", paidAmount: "付款金額 JPY",
+    save: "儲存", saveRate: "儲存匯率", edit: "修改", delete: "刪除", customerName: "客戶姓名", itemName: "商品名稱", priceYen: "商品金額 JPY",
+    paidAmount: "付款金額 JPY", quantity: "數量", unitPrice: "單價 JPY", orderTotal: "訂單總額",
     koseiAdvance: "kosei 代墊", choAdvance: "cho 代墊", advanceTwd: "台幣換算", backupStatus: "自動備份", exchangeRate: "日幣換台幣匯率",
     loginFailed: "帳號或密碼錯誤", noData: "目前沒有資料", paidBy: "付款人", customer: "客戶", method: "方式", contact: "聯絡方式", confirmDelete: "確定要刪除這筆資料嗎？"
   },
@@ -15,7 +16,8 @@ const translations = {
     todayWork: "本日の業務", dashboard: "概要", pendingOrders: "未処理注文", warehouseItems: "倉庫荷物", unpaidCustomers: "未払い顧客", advanceTotal: "立替合計",
     orders: "注文", products: "商品", packages: "荷物", shipping: "出荷", customers: "顧客", accounting: "精算",
     addOrder: "注文追加", addProduct: "商品追加", addPackage: "荷物追加", addShipment: "出荷追加", addCustomer: "顧客追加", addPayment: "支払い追加",
-    save: "保存", saveRate: "レート保存", edit: "編集", delete: "削除", customerName: "顧客名", itemName: "商品名", priceYen: "商品金額 JPY", paidAmount: "支払金額 JPY",
+    save: "保存", saveRate: "レート保存", edit: "編集", delete: "削除", customerName: "顧客名", itemName: "商品名", priceYen: "商品金額 JPY",
+    paidAmount: "支払金額 JPY", quantity: "数量", unitPrice: "単価 JPY", orderTotal: "注文合計",
     koseiAdvance: "kosei 立替", choAdvance: "cho 立替", advanceTwd: "台湾ドル換算", backupStatus: "自動バックアップ", exchangeRate: "JPYからTWDのレート",
     loginFailed: "アカウントまたはパスワードが違います", noData: "データがありません", paidBy: "支払者", customer: "顧客", method: "方法", contact: "連絡先", confirmDelete: "このデータを削除しますか？"
   }
@@ -23,8 +25,14 @@ const translations = {
 
 const defaultData = {
   settings: { exchangeRate: 0.22 },
-  orders: [{ id: "O-001", customer: "林小姐", item: "藥妝補貨", status: "報價中" }, { id: "O-002", customer: "Cho", item: "限定周邊", status: "已採購" }],
-  products: [{ id: "P-001", name: "藥妝補貨", customer: "林小姐", price: 12800 }, { id: "P-002", name: "限定周邊", customer: "Cho", price: 6800 }],
+  orders: [
+    { id: "O-001", customer: "林小姐", productId: "P-001", item: "藥妝補貨", quantity: 1, unitPrice: 12800, total: 12800, status: "報價中" },
+    { id: "O-002", customer: "Cho", productId: "P-002", item: "限定周邊", quantity: 2, unitPrice: 6800, total: 13600, status: "已採購" }
+  ],
+  products: [
+    { id: "P-001", name: "藥妝補貨", customer: "林小姐", price: 12800 },
+    { id: "P-002", name: "限定周邊", customer: "Cho", price: 6800 }
+  ],
   packages: [{ id: "B-001", no: "JP-WH-001", customer: "林小姐", status: "日本倉入庫" }],
   shipping: [{ id: "S-001", customer: "林小姐", method: "空運", status: "待出貨" }],
   customers: [{ id: "C-001", name: "林小姐", contact: "LINE: lin.jp", paymentStatus: "未付款" }, { id: "C-002", name: "Cho", contact: "LINE: cho", paymentStatus: "已付款" }],
@@ -32,7 +40,7 @@ const defaultData = {
 };
 
 const config = {
-  orders: { prefix: "O", formId: "orderForm" },
+  orders: { prefix: "O", formId: "orderForm", numeric: ["quantity", "unitPrice"] },
   products: { prefix: "P", formId: "productForm", numeric: ["price"] },
   packages: { prefix: "B", formId: "packageForm" },
   shipping: { prefix: "S", formId: "shippingForm" },
@@ -48,11 +56,25 @@ function loadLocalData() { const saved = localStorage.getItem("erpData"); return
 function normalize(data) {
   const merged = { ...clone(defaultData), ...data, settings: { ...defaultData.settings, ...(data.settings || {}) } };
   merged.customers = (merged.customers || []).map((customer) => ({ ...customer, paymentStatus: customer.paymentStatus || "未付款" }));
+  merged.orders = (merged.orders || []).map((order) => {
+    const product = (merged.products || []).find((item) => item.id === order.productId || item.name === order.item);
+    const quantity = Number(order.quantity || 1);
+    const unitPrice = Number(order.unitPrice || product?.price || order.total || 0);
+    return {
+      ...order,
+      productId: order.productId || product?.id || "",
+      item: order.item || product?.name || "",
+      quantity,
+      unitPrice,
+      total: Number(order.total || quantity * unitPrice),
+    };
+  });
   return merged;
 }
 function text(key) { return translations[state.lang][key] || translations.zh[key] || key; }
 function money(amount, currency = "JPY") { const value = Number(amount || 0).toLocaleString(undefined, { maximumFractionDigits: currency === "TWD" ? 0 : 2 }); return currency === "TWD" ? `NT$${value}` : `¥${value}`; }
 function yenToTwd(amount) { return Number(amount || 0) * Number(state.data.settings.exchangeRate || 0); }
+function productName(productId, fallback = "") { return state.data.products.find((item) => item.id === productId)?.name || fallback || productId; }
 
 async function syncFromServer() {
   if (!hasServer) return;
@@ -92,8 +114,24 @@ function badgeClass(status) { if ((status || "").includes("未") || (status || "
 function emptyList() { return `<div class="item-card"><span class="meta">${text("noData")}</span></div>`; }
 function actions(collection, id) { return `<div class="item-actions"><button class="secondary-button" type="button" data-edit="${collection}" data-id="${id}">${text("edit")}</button><button class="danger-button" type="button" data-delete="${collection}" data-id="${id}">${text("delete")}</button></div>`; }
 
+function renderProductSelects() {
+  const options = state.data.products.map((product) => `<option value="${product.id}">${product.name} / ${money(product.price)}</option>`).join("");
+  document.querySelector("#orderProduct").innerHTML = options || `<option value="">${text("noData")}</option>`;
+  document.querySelector("#paymentProduct").innerHTML = state.data.products.map((product) => `<option value="${product.id}">${product.name} / ${product.customer} / ${money(product.price)}</option>`).join("");
+}
+function updateOrderTotalPreview() {
+  const quantity = Number(document.querySelector("#orderQuantity").value || 0);
+  const unitPrice = Number(document.querySelector("#orderUnitPrice").value || 0);
+  document.querySelector("#orderTotalPreview").textContent = money(quantity * unitPrice);
+}
+function syncOrderPriceFromProduct() {
+  const product = state.data.products.find((item) => item.id === document.querySelector("#orderProduct").value);
+  if (product) document.querySelector("#orderUnitPrice").value = product.price || 0;
+  updateOrderTotalPreview();
+}
+
 function renderOrders() {
-  document.querySelector("#orderList").innerHTML = state.data.orders.map((order) => `<article class="item-card"><div class="item-top"><strong>${order.item}</strong><span class="${badgeClass(order.status)}">${order.status}</span></div><span class="meta">${text("customer")}: ${order.customer} / ${order.id}</span>${actions("orders", order.id)}</article>`).join("") || emptyList();
+  document.querySelector("#orderList").innerHTML = state.data.orders.map((order) => `<article class="item-card"><div class="item-top"><strong>${productName(order.productId, order.item)}</strong><span class="${badgeClass(order.status)}">${order.status}</span></div><span class="meta">${text("customer")}: ${order.customer} / ${order.quantity} 份 x ${money(order.unitPrice)} = ${money(order.total)}</span>${actions("orders", order.id)}</article>`).join("") || emptyList();
 }
 function renderProducts() {
   document.querySelector("#productList").innerHTML = state.data.products.map((product) => `<article class="item-card"><div class="item-top"><strong>${product.name}</strong><span class="pill">${money(product.price)} / ${money(yenToTwd(product.price), "TWD")}</span></div><span class="meta">${text("customer")}: ${product.customer} / ${product.id}</span>${actions("products", product.id)}</article>`).join("") || emptyList();
@@ -108,7 +146,6 @@ function renderCustomers() {
   document.querySelector("#customerList").innerHTML = state.data.customers.map((customer) => `<article class="item-card"><div class="item-top"><strong>${customer.name}</strong><span class="${badgeClass(customer.paymentStatus)}">${customer.paymentStatus}</span></div><span class="meta">${text("contact")}: ${customer.contact || "-"} / ${customer.id}</span>${actions("customers", customer.id)}</article>`).join("") || emptyList();
 }
 function renderAccounting() {
-  document.querySelector("#paymentProduct").innerHTML = state.data.products.map((product) => `<option value="${product.id}">${product.name} / ${product.customer} / ${money(product.price)}</option>`).join("");
   document.querySelector("#exchangeRate").value = state.data.settings.exchangeRate;
   const totals = state.data.payments.reduce((sum, payment) => { sum[payment.payer] += Number(payment.amount || 0); return sum; }, { kosei: 0, cho: 0 });
   const total = totals.kosei + totals.cho;
@@ -126,12 +163,18 @@ function renderSummary() {
   document.querySelector("#warehouseItems").textContent = state.data.packages.length;
   document.querySelector("#unpaidCustomers").textContent = state.data.customers.filter((customer) => customer.paymentStatus !== "已付款").length;
 }
-function renderAll() { if (!document.querySelector("#appShell")) return; state.data = normalize(state.data); renderOrders(); renderProducts(); renderPackages(); renderShipping(); renderCustomers(); renderAccounting(); renderSummary(); }
+function renderAll() { if (!document.querySelector("#appShell")) return; state.data = normalize(state.data); renderProductSelects(); renderOrders(); renderProducts(); renderPackages(); renderShipping(); renderCustomers(); renderAccounting(); renderSummary(); updateOrderTotalPreview(); }
 
 function nextId(prefix, list) { return `${prefix}-${String(list.length + 1).padStart(3, "0")}`; }
 function formValues(form, collection) {
   const numeric = config[collection].numeric || [];
-  return [...form.querySelectorAll("[data-field]")].reduce((values, field) => { values[field.dataset.field] = numeric.includes(field.dataset.field) ? Number(field.value || 0) : field.value.trim(); return values; }, {});
+  const values = [...form.querySelectorAll("[data-field]")].reduce((result, field) => { result[field.dataset.field] = numeric.includes(field.dataset.field) ? Number(field.value || 0) : field.value.trim(); return result; }, {});
+  if (collection === "orders") {
+    const product = state.data.products.find((item) => item.id === values.productId);
+    values.item = product?.name || "";
+    values.total = Number(values.quantity || 0) * Number(values.unitPrice || 0);
+  }
+  return values;
 }
 function fillForm(collection, id) {
   const form = document.querySelector(`#${config[collection].formId}`);
@@ -140,6 +183,7 @@ function fillForm(collection, id) {
   form.dataset.editingId = id;
   form.classList.remove("hidden");
   form.querySelectorAll("[data-field]").forEach((field) => { field.value = item[field.dataset.field] ?? ""; });
+  updateOrderTotalPreview();
   form.scrollIntoView({ behavior: "smooth", block: "center" });
 }
 function upsertFromForm(event, collection) {
@@ -154,6 +198,7 @@ function upsertFromForm(event, collection) {
     state.data[collection].unshift({ id: nextId(config[collection].prefix, state.data[collection]), ...values });
   }
   form.reset();
+  syncOrderPriceFromProduct();
   saveData();
   renderAll();
 }
@@ -168,7 +213,10 @@ document.querySelector("#logoutBtn").addEventListener("click", () => { state.cur
 document.querySelector("#loginLang").addEventListener("change", (event) => setLanguage(event.target.value));
 document.querySelector("#appLang").addEventListener("change", (event) => setLanguage(event.target.value));
 document.querySelectorAll(".tab, .bottom-link").forEach((button) => button.addEventListener("click", () => activateView(button.dataset.view)));
-document.querySelectorAll("[data-open-form]").forEach((button) => button.addEventListener("click", () => { const form = document.querySelector(`#${button.dataset.openForm}`); delete form.dataset.editingId; form.reset(); form.classList.toggle("hidden"); }));
+document.querySelectorAll("[data-open-form]").forEach((button) => button.addEventListener("click", () => { const form = document.querySelector(`#${button.dataset.openForm}`); delete form.dataset.editingId; form.reset(); form.classList.toggle("hidden"); syncOrderPriceFromProduct(); }));
+document.querySelector("#orderProduct").addEventListener("change", syncOrderPriceFromProduct);
+document.querySelector("#orderQuantity").addEventListener("input", updateOrderTotalPreview);
+document.querySelector("#orderUnitPrice").addEventListener("input", updateOrderTotalPreview);
 document.querySelector("#orderForm").addEventListener("submit", (event) => upsertFromForm(event, "orders"));
 document.querySelector("#productForm").addEventListener("submit", (event) => upsertFromForm(event, "products"));
 document.querySelector("#packageForm").addEventListener("submit", (event) => upsertFromForm(event, "packages"));

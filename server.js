@@ -11,8 +11,8 @@ const backupDir = path.join(dataDir, "backups");
 const defaultData = {
   settings: { exchangeRate: 0.22 },
   orders: [
-    { id: "O-001", customer: "林小姐", item: "藥妝補貨", status: "報價中" },
-    { id: "O-002", customer: "Cho", item: "限定周邊", status: "已採購" },
+    { id: "O-001", customer: "林小姐", productId: "P-001", item: "藥妝補貨", quantity: 1, unitPrice: 12800, total: 12800, status: "報價中" },
+    { id: "O-002", customer: "Cho", productId: "P-002", item: "限定周邊", quantity: 2, unitPrice: 6800, total: 13600, status: "已採購" },
   ],
   products: [
     { id: "P-001", name: "藥妝補貨", customer: "林小姐", price: 12800 },
@@ -70,6 +70,19 @@ function normalizeData(data) {
     ...customer,
     paymentStatus: customer.paymentStatus || "未付款",
   }));
+  merged.orders = (merged.orders || []).map((order) => {
+    const product = (merged.products || []).find((item) => item.id === order.productId || item.name === order.item);
+    const quantity = Number(order.quantity || 1);
+    const unitPrice = Number(order.unitPrice || product?.price || order.total || 0);
+    return {
+      ...order,
+      productId: order.productId || product?.id || "",
+      item: order.item || product?.name || "",
+      quantity,
+      unitPrice,
+      total: Number(order.total || quantity * unitPrice),
+    };
+  });
   return merged;
 }
 
