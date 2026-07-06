@@ -6,8 +6,10 @@ const port = process.env.PORT || 3000;
 const root = __dirname;
 const dataDir = process.env.DATA_DIR || root;
 const dataFile = path.join(dataDir, "data.json");
+const backupDir = path.join(dataDir, "backups");
 
 const defaultData = {
+  settings: { exchangeRate: 0.22 },
   orders: [
     { id: "O-001", customer: "林小姐", item: "藥妝補貨", status: "報價中" },
     { id: "O-002", customer: "Cho", item: "限定周邊", status: "已採購" },
@@ -19,8 +21,8 @@ const defaultData = {
   packages: [{ id: "B-001", no: "JP-WH-001", customer: "林小姐", status: "日本倉入庫" }],
   shipping: [{ id: "S-001", customer: "林小姐", method: "空運", status: "待出貨" }],
   customers: [
-    { id: "C-001", name: "林小姐", contact: "LINE: lin.jp" },
-    { id: "C-002", name: "Cho", contact: "LINE: cho" },
+    { id: "C-001", name: "林小姐", contact: "LINE: lin.jp", paymentStatus: "未付款" },
+    { id: "C-002", name: "Cho", contact: "LINE: cho", paymentStatus: "已付款" },
   ],
   payments: [
     { id: "A-001", productId: "P-001", payer: "kosei", amount: 12800 },
@@ -39,9 +41,36 @@ const mimeTypes = {
 
 function ensureDataFile() {
   fs.mkdirSync(dataDir, { recursive: true });
+  fs.mkdirSync(backupDir, { recursive: true });
   if (!fs.existsSync(dataFile)) {
     fs.writeFileSync(dataFile, JSON.stringify(defaultData, null, 2), "utf8");
   }
+}
+
+function timestamp() {
+  return new Date().toISOString().replace(/[:.]/g, "-");
+}
+
+function writeBackup(reason = "auto") {
+  ensureDataFile();
+  if (!fs.existsSync(dataFile)) return;
+  const name = `data-${reason}-${timestamp()}.json`;
+  fs.copyFileSync(dataFile, path.join(backupDir, name));
+  const backups = fs
+    .readdirSync(backupDir)
+    .filter((file) => file.endsWith(".json"))
+    .sort()
+    .reverse();
+  backups.slice(30).forEach((file) => fs.unlinkSync(path.join(backupDir, file)));
+}
+
+function normalizeData(data) {
+  const merged = { ...defaultData, ...data, settings: { ...defaultData.settings, ...(data.settings || {}) } };
+  merged.customers = (merged.customers || []).map((customer) => ({
+    ...customer,
+    paymentStatus: customer.paymentStatus || "未付款",
+  }));
+  return merged;
 }
 
 function sendJson(response, status, body) {
@@ -54,9 +83,7 @@ function readBody(request) {
     let body = "";
     request.on("data", (chunk) => {
       body += chunk;
-      if (body.length > 2_000_000) {
-        request.destroy();
-      }
+      if (body.length > 2_000_000) request.destroy();
     });
     request.on("end", () => resolve(body));
     request.on("error", reject);
@@ -84,16 +111,11 @@ function serveFile(request, response) {
           response.end("Not found");
           return;
         }
-
-        response.writeHead(200, {
-          "Content-Type": "text/html; charset=utf-8",
-          "Cache-Control": "no-store",
-        });
+        response.writeHead(200, { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-store" });
         response.end(indexContent);
       });
       return;
     }
-
     response.writeHead(200, {
       "Content-Type": mimeTypes[path.extname(filePath)] || "application/octet-stream",
       "Cache-Control": "no-store",
@@ -103,6 +125,7 @@ function serveFile(request, response) {
 }
 
 ensureDataFile();
+setInterval(() => writeBackup("scheduled"), 6 * 60 * 60 * 1000);
 
 const server = http.createServer(async (request, response) => {
   if (request.url === "/api/data" && request.method === "GET") {
@@ -115,12 +138,21 @@ const server = http.createServer(async (request, response) => {
   if (request.url === "/api/data" && request.method === "POST") {
     try {
       const body = await readBody(request);
-      const data = JSON.parse(body);
+      const data = normalizeData(JSON.parse(body));
+      writeBackup("before-save");
       fs.writeFileSync(dataFile, JSON.stringify(data, null, 2), "utf8");
       sendJson(response, 200, { ok: true });
     } catch {
       sendJson(response, 400, { ok: false });
     }
+    return;
+  }
+
+  if (request.url === "/api/backups" && request.method === "GET") {
+    ensureDataFile();
+    sendJson(response, 200, {
+      backups: fs.readdirSync(backupDir).filter((file) => file.endsWith(".json")).sort().reverse(),
+    });
     return;
   }
 

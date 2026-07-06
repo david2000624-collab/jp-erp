@@ -48,6 +48,14 @@ select {
   padding: 0 12px;
 }
 
+.inline-field {
+  display: grid;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 800;
+}
+
 .hidden {
   display: none !important;
 }
@@ -130,7 +138,9 @@ h2 {
 
 .primary-button,
 .small-button,
-.ghost-button {
+.ghost-button,
+.secondary-button,
+.danger-button {
   min-height: 44px;
   border-radius: 8px;
   font-weight: 800;
@@ -154,6 +164,24 @@ h2 {
   border: 1px solid var(--line);
   background: #fff;
   color: var(--ink);
+}
+
+.secondary-button,
+.danger-button {
+  min-height: 36px;
+  padding: 0 11px;
+  font-size: 13px;
+}
+
+.secondary-button {
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--ink);
+}
+
+.danger-button {
+  background: #fff0f0;
+  color: var(--danger);
 }
 
 .app-shell {
@@ -271,6 +299,10 @@ h2 {
   background: #f6faf8;
 }
 
+.exchange-form {
+  grid-template-columns: 1fr;
+}
+
 .list {
   display: grid;
   gap: 10px;
@@ -338,6 +370,11 @@ h2 {
   font-size: 22px;
 }
 
+.item-actions {
+  display: flex;
+  gap: 8px;
+}
+
 .bottom-nav {
   position: fixed;
   right: 0;
@@ -375,5 +412,9 @@ h2 {
   .quick-form {
     grid-template-columns: repeat(4, minmax(0, 1fr));
     align-items: center;
+  }
+
+  .exchange-form {
+    grid-template-columns: minmax(0, 1fr) 160px;
   }
 }
