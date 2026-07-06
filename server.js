@@ -68,6 +68,7 @@ function serveFile(request, response) {
   const relativePath = requestPath === "/" ? "index.html" : requestPath.replace(/^[/\\]+/, "");
   const safePath = path.normalize(relativePath).replace(/^(\.\.[/\\])+/, "");
   const filePath = path.join(root, safePath);
+  const indexPath = path.join(root, "index.html");
 
   if (!filePath.startsWith(root)) {
     response.writeHead(403);
@@ -77,8 +78,19 @@ function serveFile(request, response) {
 
   fs.readFile(filePath, (error, content) => {
     if (error) {
-      response.writeHead(404);
-      response.end("Not found");
+      fs.readFile(indexPath, (indexError, indexContent) => {
+        if (indexError) {
+          response.writeHead(404, { "Content-Type": "text/plain; charset=utf-8" });
+          response.end("Not found");
+          return;
+        }
+
+        response.writeHead(200, {
+          "Content-Type": "text/html; charset=utf-8",
+          "Cache-Control": "no-store",
+        });
+        response.end(indexContent);
+      });
       return;
     }
 
