@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#12645d" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="代購ERP" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <title>代購 ERP 後台</title>
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="icon.svg" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <section id="loginScreen" class="login-screen">
+      <div class="login-card">
+        <div class="brand-row">
+          <div class="app-icon">JP</div>
+          <div>
+            <p class="kicker" data-i18n="appSubtitle">日本代購後台</p>
+            <h1 data-i18n="loginTitle">代購 ERP</h1>
+          </div>
+        </div>
+
+        <label class="field">
+          <span data-i18n="language">語言</span>
+          <select id="loginLang">
+            <option value="zh">中文</option>
+            <option value="ja">日本語</option>
+          </select>
+        </label>
+
+        <label class="field">
+          <span data-i18n="account">帳號</span>
+          <input id="username" autocomplete="username" inputmode="text" placeholder="kosei / cho" />
+        </label>
+
+        <label class="field">
+          <span data-i18n="password">密碼</span>
+          <input id="password" autocomplete="current-password" inputmode="numeric" type="password" placeholder="0000" />
+        </label>
+
+        <p id="loginError" class="form-error" aria-live="polite"></p>
+        <button id="loginBtn" class="primary-button" type="button" data-i18n="login">登入</button>
+      </div>
+    </section>
+
+    <section id="appShell" class="app-shell hidden">
+      <header class="mobile-header">
+        <div>
+          <p class="kicker" data-i18n="todayWork">今日工作</p>
+          <h1 data-i18n="dashboard">總覽</h1>
+        </div>
+        <div class="header-actions">
+          <select id="appLang" aria-label="Language">
+            <option value="zh">中文</option>
+            <option value="ja">日本語</option>
+          </select>
+          <button id="logoutBtn" class="ghost-button" type="button" data-i18n="logout">登出</button>
+        </div>
+      </header>
+
+      <main class="content">
+        <section class="summary-grid" aria-label="ERP summary">
+          <article class="summary-card">
+            <span data-i18n="pendingOrders">待處理訂單</span>
+            <strong id="pendingOrders">0</strong>
+          </article>
+          <article class="summary-card">
+            <span data-i18n="warehouseItems">倉庫包裹</span>
+            <strong id="warehouseItems">0</strong>
+          </article>
+          <article class="summary-card">
+            <span data-i18n="shipments">待出貨</span>
+            <strong id="shipmentCount">0</strong>
+          </article>
+          <article class="summary-card">
+            <span data-i18n="advanceTotal">代墊總額</span>
+            <strong id="advanceTotal">¥0</strong>
+          </article>
+        </section>
+
+        <section class="tabs" aria-label="ERP modules">
+          <button class="tab active" data-view="orders" type="button" data-i18n="orders">訂單</button>
+          <button class="tab" data-view="products" type="button" data-i18n="products">商品</button>
+          <button class="tab" data-view="packages" type="button" data-i18n="packages">包裹</button>
+          <button class="tab" data-view="shipping" type="button" data-i18n="shipping">出貨</button>
+          <button class="tab" data-view="customers" type="button" data-i18n="customers">客戶</button>
+          <button class="tab" data-view="accounting" type="button" data-i18n="accounting">對帳</button>
+        </section>
+
+        <section id="orders" class="view active">
+          <div class="section-title">
+            <h2 data-i18n="orders">訂單</h2>
+            <button class="small-button" data-open-form="orderForm" type="button" data-i18n="addOrder">新增訂單</button>
+          </div>
+          <form id="orderForm" class="quick-form hidden">
+            <input id="orderCustomer" data-i18n-placeholder="customerName" placeholder="客戶姓名" />
+            <input id="orderItem" data-i18n-placeholder="itemName" placeholder="商品名稱" />
+            <select id="orderStatus">
+              <option value="報價中">報價中</option>
+              <option value="待付款">待付款</option>
+              <option value="已採購">已採購</option>
+              <option value="已入庫">已入庫</option>
+            </select>
+            <button class="primary-button" type="submit" data-i18n="save">儲存</button>
+          </form>
+          <div id="orderList" class="list"></div>
+        </section>
+
+        <section id="products" class="view">
+          <div class="section-title">
+            <h2 data-i18n="products">商品</h2>
+            <button class="small-button" data-open-form="productForm" type="button" data-i18n="addProduct">新增商品</button>
+          </div>
+          <form id="productForm" class="quick-form hidden">
+            <input id="productName" data-i18n-placeholder="itemName" placeholder="商品名稱" />
+            <input id="productCustomer" data-i18n-placeholder="customerName" placeholder="客戶姓名" />
+            <input id="productPrice" inputmode="numeric" data-i18n-placeholder="priceYen" placeholder="商品金額 JPY" />
+            <button class="primary-button" type="submit" data-i18n="save">儲存</button>
+          </form>
+          <div id="productList" class="list"></div>
+        </section>
+
+        <section id="packages" class="view">
+          <div class="section-title">
+            <h2 data-i18n="packages">包裹</h2>
+            <button class="small-button" data-open-form="packageForm" type="button" data-i18n="addPackage">新增包裹</button>
+          </div>
+          <form id="packageForm" class="quick-form hidden">
+            <input id="packageNo" placeholder="JP-WH-001" />
+            <input id="packageCustomer" data-i18n-placeholder="customerName" placeholder="客戶姓名" />
+            <select id="packageStatus">
+              <option value="日本倉入庫">日本倉入庫</option>
+              <option value="等待合箱">等待合箱</option>
+              <option value="可出貨">可出貨</option>
+            </select>
+            <button class="primary-button" type="submit" data-i18n="save">儲存</button>
+          </form>
+          <div id="packageList" class="list"></div>
+        </section>
+
+        <section id="shipping" class="view">
+          <div class="section-title">
+            <h2 data-i18n="shipping">出貨</h2>
+            <button class="small-button" data-open-form="shippingForm" type="button" data-i18n="addShipment">新增出貨</button>
+          </div>
+          <form id="shippingForm" class="quick-form hidden">
+            <input id="shippingCustomer" data-i18n-placeholder="customerName" placeholder="客戶姓名" />
+            <select id="shippingMethod">
+              <option value="空運">空運</option>
+              <option value="海運">海運</option>
+              <option value="EMS">EMS</option>
+            </select>
+            <select id="shippingStatus">
+              <option value="待出貨">待出貨</option>
+              <option value="已出貨">已出貨</option>
+            </select>
+            <button class="primary-button" type="submit" data-i18n="save">儲存</button>
+          </form>
+          <div id="shippingList" class="list"></div>
+        </section>
+
+        <section id="customers" class="view">
+          <div class="section-title">
+            <h2 data-i18n="customers">客戶</h2>
+            <button class="small-button" data-open-form="customerForm" type="button" data-i18n="addCustomer">新增客戶</button>
+          </div>
+          <form id="customerForm" class="quick-form hidden">
+            <input id="customerName" data-i18n-placeholder="customerName" placeholder="客戶姓名" />
+            <input id="customerLine" placeholder="LINE / 電話" />
+            <button class="primary-button" type="submit" data-i18n="save">儲存</button>
+          </form>
+          <div id="customerList" class="list"></div>
+        </section>
+
+        <section id="accounting" class="view">
+          <div class="section-title">
+            <h2 data-i18n="accounting">對帳</h2>
+            <button class="small-button" data-open-form="accountingForm" type="button" data-i18n="addPayment">新增付款</button>
+          </div>
+          <form id="accountingForm" class="quick-form hidden">
+            <select id="paymentProduct"></select>
+            <select id="paymentPayer">
+              <option value="kosei">kosei</option>
+              <option value="cho">cho</option>
+            </select>
+            <input id="paymentAmount" inputmode="numeric" data-i18n-placeholder="paidAmount" placeholder="付款金額 JPY" />
+            <button class="primary-button" type="submit" data-i18n="save">儲存</button>
+          </form>
+
+          <div class="advance-box">
+            <div>
+              <span data-i18n="koseiAdvance">kosei 代墊</span>
+              <strong id="koseiAdvance">¥0</strong>
+            </div>
+            <div>
+              <span data-i18n="choAdvance">cho 代墊</span>
+              <strong id="choAdvance">¥0</strong>
+            </div>
+          </div>
+
+          <div id="paymentList" class="list"></div>
+        </section>
+      </main>
+
+      <nav class="bottom-nav" aria-label="Quick modules">
+        <button class="bottom-link active" data-view="orders" type="button" data-i18n="orders">訂單</button>
+        <button class="bottom-link" data-view="products" type="button" data-i18n="products">商品</button>
+        <button class="bottom-link" data-view="packages" type="button" data-i18n="packages">包裹</button>
+        <button class="bottom-link" data-view="accounting" type="button" data-i18n="accounting">對帳</button>
+      </nav>
+    </section>
+
+    <script src="script.js"></script>
+  </body>
+</html>
