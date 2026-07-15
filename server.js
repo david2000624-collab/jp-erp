@@ -64,6 +64,12 @@ function writeBackup(reason = "auto") {
   backups.slice(30).forEach((file) => fs.unlinkSync(path.join(backupDir, file)));
 }
 
+function safeBackupPath(file) {
+  if (!/^data-[\w-]+\.json$/.test(file)) return "";
+  const fullPath = path.join(backupDir, file);
+  return fullPath.startsWith(backupDir) ? fullPath : "";
+}
+
 function normalizeData(data) {
   const merged = { ...defaultData, ...data, settings: { ...defaultData.settings, ...(data.settings || {}) } };
   merged.purchaseItems = merged.purchaseItems || [];
@@ -173,6 +179,38 @@ const server = http.createServer(async (request, response) => {
   if (request.url === "/api/backups" && request.method === "GET") {
     ensureDataFile();
     sendJson(response, 200, { backups: fs.readdirSync(backupDir).filter((file) => file.endsWith(".json")).sort().reverse() });
+    return;
+  }
+
+  if (request.url.startsWith("/api/backups/") && request.method === "GET") {
+    ensureDataFile();
+    const file = decodeURIComponent(request.url.replace("/api/backups/", ""));
+    const backupPath = safeBackupPath(file);
+    if (!backupPath || !fs.existsSync(backupPath)) {
+      sendJson(response, 404, { ok: false });
+      return;
+    }
+    sendJson(response, 200, normalizeData(JSON.parse(fs.readFileSync(backupPath, "utf8"))));
+    return;
+  }
+
+  if (request.url === "/api/restore" && request.method === "POST") {
+    try {
+      ensureDataFile();
+      const body = await readBody(request);
+      const { file } = JSON.parse(body);
+      const backupPath = safeBackupPath(file || "");
+      if (!backupPath || !fs.existsSync(backupPath)) {
+        sendJson(response, 404, { ok: false });
+        return;
+      }
+      writeBackup("before-restore");
+      const data = normalizeData(JSON.parse(fs.readFileSync(backupPath, "utf8")));
+      fs.writeFileSync(dataFile, JSON.stringify(data, null, 2), "utf8");
+      sendJson(response, 200, { ok: true, restored: file });
+    } catch {
+      sendJson(response, 400, { ok: false });
+    }
     return;
   }
 
