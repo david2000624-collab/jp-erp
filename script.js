@@ -6,7 +6,7 @@ const translations = {
     todayWork: "今日工作", dashboard: "總覽", pendingOrders: "待處理訂單", warehouseItems: "倉庫包裹", unpaidCustomers: "未付款客戶", advanceTotal: "代墊總額",
     orders: "訂單", products: "商品", purchaseItems: "進貨項目", inventory: "庫存", packages: "包裹", shipping: "出貨", customers: "客戶", accounting: "對帳", settings: "設定",
     addOrder: "新增訂單", addProduct: "新增商品", addPurchase: "新增進貨", addPackage: "新增包裹", addShipment: "新增出貨", addCustomer: "新增客戶", addPayment: "新增付款",
-    save: "儲存", saveSettings: "儲存設定", edit: "修改", delete: "刪除", customerName: "客戶姓名", itemName: "商品名稱", price: "商品金額", salePrice: "售價", paidAmount: "付款金額", paymentNote: "備註", productImage: "商品圖片", selectProduct: "選擇既有商品",
+    save: "儲存", saveSettings: "儲存設定", edit: "修改", delete: "刪除", customerName: "客戶姓名", itemName: "商品名稱", price: "商品金額", salePrice: "售價", averageUnitPrice: "平均單價", paidAmount: "付款金額", paymentNote: "備註", productImage: "商品圖片", selectProduct: "選擇既有商品",
     quantity: "數量", unitPrice: "單價", unitCost: "進貨單價", shippingCost: "運費", transportCost: "交通費", supplier: "供應商 / 店家", stock: "庫存", orderTotal: "訂單總額", purchaseTotal: "進貨總成本",
     koseiAdvance: "kosei 代墊", choAdvance: "cho 代墊", advanceTwd: "目前幣別", productAdvance: "商品代墊", shippingAdvance: "運費代墊", backupStatus: "自動備份", dailyBackup: "每天", exchangeRate: "日幣換台幣匯率", displayCurrency: "顯示幣別",
     loginFailed: "帳號或密碼錯誤", noData: "目前沒有資料", paidBy: "付款人", customer: "客戶", method: "方式", contact: "聯絡方式", confirmDelete: "確定要刪除這筆資料嗎？", shippingFee: "運費", transportFee: "交通費", stockIn: "入庫存", stocked: "已入庫存",
@@ -17,7 +17,7 @@ const translations = {
     todayWork: "本日の業務", dashboard: "概要", pendingOrders: "未処理注文", warehouseItems: "倉庫荷物", unpaidCustomers: "未払い顧客", advanceTotal: "立替合計",
     orders: "注文", products: "商品", purchaseItems: "仕入項目", inventory: "在庫", packages: "荷物", shipping: "出荷", customers: "顧客", accounting: "精算", settings: "設定",
     addOrder: "注文追加", addProduct: "商品追加", addPurchase: "仕入追加", addPackage: "荷物追加", addShipment: "出荷追加", addCustomer: "顧客追加", addPayment: "支払い追加",
-    save: "保存", saveSettings: "設定保存", edit: "編集", delete: "削除", customerName: "顧客名", itemName: "商品名", price: "商品金額", salePrice: "販売価格", paidAmount: "支払金額", paymentNote: "メモ", productImage: "商品画像", selectProduct: "既存商品を選択",
+    save: "保存", saveSettings: "設定保存", edit: "編集", delete: "削除", customerName: "顧客名", itemName: "商品名", price: "商品金額", salePrice: "販売価格", averageUnitPrice: "平均単価", paidAmount: "支払金額", paymentNote: "メモ", productImage: "商品画像", selectProduct: "既存商品を選択",
     quantity: "数量", unitPrice: "単価", unitCost: "仕入単価", shippingCost: "送料", transportCost: "交通費", supplier: "仕入先 / 店舗", stock: "在庫", orderTotal: "注文合計", purchaseTotal: "仕入合計",
     koseiAdvance: "kosei 立替", choAdvance: "cho 立替", advanceTwd: "現在通貨", productAdvance: "商品立替", shippingAdvance: "送料立替", backupStatus: "自動バックアップ", dailyBackup: "毎日", exchangeRate: "JPYからTWDのレート", displayCurrency: "表示通貨",
     loginFailed: "アカウントまたはパスワードが違います", noData: "データがありません", paidBy: "支払者", customer: "顧客", method: "方法", contact: "連絡先", confirmDelete: "このデータを削除しますか？", shippingFee: "送料", transportFee: "交通費", stockIn: "在庫入庫", stocked: "入庫済み",
@@ -118,6 +118,11 @@ function paymentTypeLabel(type) { return type === "shipping" ? text("shippingAdv
 function paymentTitle(payment) {
   if (payment.type === "shipping") return payment.note || text("shippingAdvance");
   return productName(payment.productId, payment.note || payment.productId);
+}
+function averageUnitPrice(product) {
+  const stock = Number(product.stock || 0);
+  const shippingShare = stock > 0 ? Number(product.shippingCost || 0) / stock : Number(product.shippingCost || 0);
+  return Number(product.price || 0) + shippingShare;
 }
 function productImageMarkup(product) {
   return product.image ? `<img class="product-image" src="${product.image}" alt="${product.name}" />` : `<div class="product-image placeholder">JP</div>`;
@@ -228,7 +233,7 @@ function renderOrders() {
   document.querySelector("#orderList").innerHTML = state.data.orders.map((order) => `<article class="item-card"><div class="item-top"><strong>${productName(order.productId, order.item)}</strong><span class="${badgeClass(order.status)}">${order.status}</span></div><span class="meta">${text("customer")}: ${order.customer} / ${order.quantity} x ${money(order.unitPrice)} = ${money(order.total)}</span>${actions("orders", order.id)}</article>`).join("") || emptyList();
 }
 function renderProducts() {
-  document.querySelector("#productList").innerHTML = state.data.products.map((product) => `<article class="item-card product-card">${productImageMarkup(product)}<div><div class="item-top"><strong>${product.name}</strong><span class="pill">${text("salePrice")}: ${money(product.salePrice || product.price)}</span></div><span class="meta">${text("price")}: ${money(product.price)} / ${text("shippingFee")}: ${money(product.shippingCost)} / ${text("customer")}: ${product.customer || "-"} / ${text("stock")}: ${product.stock || 0} / ${product.id}</span></div>${actions("products", product.id)}</article>`).join("") || emptyList();
+  document.querySelector("#productList").innerHTML = state.data.products.map((product) => `<article class="item-card product-card">${productImageMarkup(product)}<div><div class="item-top"><strong>${product.name}</strong><span class="pill">${text("salePrice")}: ${money(product.salePrice || product.price)}</span></div><span class="meta">${text("averageUnitPrice")}: ${money(averageUnitPrice(product))} / ${text("price")}: ${money(product.price)} / ${text("shippingFee")}: ${money(product.shippingCost)} / ${text("customer")}: ${product.customer || "-"} / ${text("stock")}: ${product.stock || 0} / ${product.id}</span></div>${actions("products", product.id)}</article>`).join("") || emptyList();
 }
 function renderPurchaseItems() {
   document.querySelector("#purchaseList").innerHTML = state.data.purchaseItems.map((item) => `<article class="item-card"><div class="item-top"><strong>${productName(item.productId, item.item)}</strong><span class="${badgeClass(item.stocked ? text("stocked") : item.status)}">${item.stocked ? text("stocked") : item.status}</span></div><span class="meta">${item.supplier || "-"} / ${item.quantity} x ${money(item.unitCost)} + ${text("shippingFee")} ${money(item.shippingCost)} + ${text("transportFee")} ${money(item.transportCost)} = ${money(item.totalCost)}</span><div class="item-actions">${!item.stocked ? `<button class="secondary-button" type="button" data-stock-in="${item.id}">${text("stockIn")}</button>` : ""}<button class="secondary-button" type="button" data-edit="purchaseItems" data-id="${item.id}">${text("edit")}</button><button class="danger-button" type="button" data-delete="purchaseItems" data-id="${item.id}">${text("delete")}</button></div></article>`).join("") || emptyList();
@@ -246,7 +251,7 @@ function renderInventory() {
 
   const productCards = state.data.products.map((product) => {
     const stock = Number(product.stock || 0);
-    return `<article class="item-card"><div class="item-top"><strong>${product.name}</strong><span class="${stock <= 2 ? "pill warn" : "pill"}">${text("currentStock")}: ${stock}</span></div><span class="meta">${text("salePrice")}: ${money(product.salePrice || product.price)} / ${text("inventoryValue")}: ${money(stock * Number(product.price || 0))} / ${text("salesValue")}: ${money(stock * Number(product.salePrice || product.price || 0))} / ${product.id}</span></article>`;
+    return `<article class="item-card"><div class="item-top"><strong>${product.name}</strong><span class="${stock <= 2 ? "pill warn" : "pill"}">${text("currentStock")}: ${stock}</span></div><span class="meta">${text("averageUnitPrice")}: ${money(averageUnitPrice(product))} / ${text("salePrice")}: ${money(product.salePrice || product.price)} / ${text("inventoryValue")}: ${money(stock * Number(product.price || 0))} / ${text("salesValue")}: ${money(stock * Number(product.salePrice || product.price || 0))} / ${product.id}</span></article>`;
   }).join("");
   const logCards = state.data.inventoryLogs.slice(0, 20).map((log) => `<article class="item-card"><div class="item-top"><strong>${productName(log.productId)}</strong><span class="pill blue">${inventoryTypeLabel(log.type)}</span></div><span class="meta">${text("quantity")}: ${log.quantity} / ${text("beforeStock")}: ${log.beforeStock} / ${text("afterStock")}: ${log.afterStock} / ${text("operator")}: ${log.user || "-"} / ${shortDate(log.createdAt)}</span>${log.note ? `<span class="meta">${log.note}</span>` : ""}</article>`).join("");
   document.querySelector("#inventoryList").innerHTML = productCards || emptyList();
