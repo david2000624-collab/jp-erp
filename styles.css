@@ -48,6 +48,12 @@ select {
   padding: 0 12px;
 }
 
+.money-field {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 86px;
+  gap: 8px;
+}
+
 .inline-field {
   display: grid;
   gap: 6px;
@@ -299,7 +305,8 @@ h2 {
   background: #f6faf8;
 }
 
-.exchange-form {
+.exchange-form,
+.settings-form {
   grid-template-columns: 1fr;
 }
 
@@ -435,7 +442,8 @@ h2 {
     align-items: center;
   }
 
-  .exchange-form {
+  .exchange-form,
+  .settings-form {
     grid-template-columns: minmax(0, 1fr) 160px;
   }
 }

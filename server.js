@@ -9,7 +9,7 @@ const dataFile = path.join(dataDir, "data.json");
 const backupDir = path.join(dataDir, "backups");
 
 const defaultData = {
-  settings: { exchangeRate: 0.22 },
+  settings: { exchangeRate: 0.22, displayCurrency: "JPY" },
   orders: [
     { id: "O-001", customer: "林小姐", productId: "P-001", item: "藥妝補貨", quantity: 1, unitPrice: 12800, total: 12800, status: "報價中" },
     { id: "O-002", customer: "Cho", productId: "P-002", item: "限定周邊", quantity: 2, unitPrice: 6800, total: 13600, status: "已採購" },

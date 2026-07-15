@@ -55,6 +55,7 @@
           <button class="tab" data-view="shipping" type="button" data-i18n="shipping">出貨</button>
           <button class="tab" data-view="customers" type="button" data-i18n="customers">客戶</button>
           <button class="tab" data-view="accounting" type="button" data-i18n="accounting">對帳</button>
+          <button class="tab" data-view="settings" type="button" data-i18n="settings">設定</button>
         </section>
 
         <section id="orders" class="view active">
@@ -63,7 +64,7 @@
             <input data-field="customer" data-i18n-placeholder="customerName" placeholder="客戶姓名" />
             <select id="orderProduct" data-field="productId"></select>
             <input id="orderQuantity" data-field="quantity" inputmode="numeric" data-i18n-placeholder="quantity" placeholder="數量" />
-            <input id="orderUnitPrice" data-field="unitPrice" inputmode="numeric" data-i18n-placeholder="unitPrice" placeholder="單價 JPY" />
+            <div class="money-field"><input id="orderUnitPrice" data-field="unitPrice" inputmode="decimal" data-i18n-placeholder="unitPrice" placeholder="單價" /><select data-currency-for="unitPrice"><option value="JPY">JPY</option><option value="TWD">TWD</option></select></div>
             <select data-field="status"><option value="報價中">報價中</option><option value="待付款">待付款</option><option value="已採購">已採購</option><option value="已入庫">已入庫</option></select>
             <div class="form-total"><span data-i18n="orderTotal">訂單總額</span><strong id="orderTotalPreview">¥0</strong></div>
             <button class="primary-button" type="submit" data-i18n="save">儲存</button>
@@ -76,7 +77,7 @@
           <form id="productForm" class="quick-form hidden" data-collection="products">
             <input data-field="name" data-i18n-placeholder="itemName" placeholder="商品名稱" />
             <input data-field="customer" data-i18n-placeholder="customerName" placeholder="客戶姓名" />
-            <input data-field="price" inputmode="numeric" data-i18n-placeholder="priceYen" placeholder="商品金額 JPY" />
+            <div class="money-field"><input data-field="price" inputmode="decimal" data-i18n-placeholder="price" placeholder="商品金額" /><select data-currency-for="price"><option value="JPY">JPY</option><option value="TWD">TWD</option></select></div>
             <button class="primary-button" type="submit" data-i18n="save">儲存</button>
           </form>
           <div id="productList" class="list"></div>
@@ -88,8 +89,8 @@
             <select id="purchaseProduct" data-field="productId"></select>
             <input data-field="supplier" data-i18n-placeholder="supplier" placeholder="供應商 / 店家" />
             <input id="purchaseQuantity" data-field="quantity" inputmode="numeric" data-i18n-placeholder="quantity" placeholder="數量" />
-            <input id="purchaseUnitCost" data-field="unitCost" inputmode="numeric" data-i18n-placeholder="unitCost" placeholder="進貨單價 JPY" />
-            <input id="purchaseShippingCost" data-field="shippingCost" inputmode="numeric" data-i18n-placeholder="shippingCost" placeholder="運費 JPY" />
+            <div class="money-field"><input id="purchaseUnitCost" data-field="unitCost" inputmode="decimal" data-i18n-placeholder="unitCost" placeholder="進貨單價" /><select data-currency-for="unitCost"><option value="JPY">JPY</option><option value="TWD">TWD</option></select></div>
+            <div class="money-field"><input id="purchaseShippingCost" data-field="shippingCost" inputmode="decimal" data-i18n-placeholder="shippingCost" placeholder="運費" /><select data-currency-for="shippingCost"><option value="JPY">JPY</option><option value="TWD">TWD</option></select></div>
             <select data-field="status"><option value="待採購">待採購</option><option value="已下單">已下單</option><option value="已到貨">已到貨</option><option value="已入庫">已入庫</option></select>
             <div class="form-total"><span data-i18n="purchaseTotal">進貨總成本</span><strong id="purchaseTotalPreview">¥0</strong></div>
             <button class="primary-button" type="submit" data-i18n="save">儲存</button>
@@ -132,14 +133,10 @@
 
         <section id="accounting" class="view">
           <div class="section-title"><h2 data-i18n="accounting">對帳</h2><button class="small-button" data-open-form="accountingForm" type="button" data-i18n="addPayment">新增付款</button></div>
-          <form id="exchangeForm" class="quick-form exchange-form">
-            <label class="inline-field"><span data-i18n="exchangeRate">日幣換台幣匯率</span><input id="exchangeRate" inputmode="decimal" placeholder="0.22" /></label>
-            <button class="primary-button" type="submit" data-i18n="saveRate">儲存匯率</button>
-          </form>
           <form id="accountingForm" class="quick-form hidden" data-collection="payments">
             <select id="paymentProduct" data-field="productId"></select>
             <select data-field="payer"><option value="kosei">kosei</option><option value="cho">cho</option></select>
-            <input data-field="amount" inputmode="numeric" data-i18n-placeholder="paidAmount" placeholder="付款金額 JPY" />
+            <div class="money-field"><input data-field="amount" inputmode="decimal" data-i18n-placeholder="paidAmount" placeholder="付款金額" /><select data-currency-for="amount"><option value="JPY">JPY</option><option value="TWD">TWD</option></select></div>
             <button class="primary-button" type="submit" data-i18n="save">儲存</button>
           </form>
           <div class="advance-box">
@@ -150,13 +147,22 @@
           </div>
           <div id="paymentList" class="list"></div>
         </section>
+
+        <section id="settings" class="view">
+          <div class="section-title"><h2 data-i18n="settings">設定</h2></div>
+          <form id="settingsForm" class="quick-form settings-form">
+            <label class="inline-field"><span data-i18n="exchangeRate">日幣換台幣匯率</span><input id="exchangeRate" inputmode="decimal" placeholder="0.22" /></label>
+            <label class="inline-field"><span data-i18n="displayCurrency">顯示幣別</span><select id="displayCurrency"><option value="JPY">JPY</option><option value="TWD">TWD</option></select></label>
+            <button class="primary-button" type="submit" data-i18n="saveSettings">儲存設定</button>
+          </form>
+        </section>
       </main>
 
       <nav class="bottom-nav" aria-label="Quick modules">
         <button class="bottom-link active" data-view="orders" type="button" data-i18n="orders">訂單</button>
         <button class="bottom-link" data-view="products" type="button" data-i18n="products">商品</button>
         <button class="bottom-link" data-view="purchaseItems" type="button" data-i18n="purchaseItems">進貨</button>
-        <button class="bottom-link" data-view="accounting" type="button" data-i18n="accounting">對帳</button>
+        <button class="bottom-link" data-view="settings" type="button" data-i18n="settings">設定</button>
       </nav>
     </section>
     <script src="script.js"></script>
