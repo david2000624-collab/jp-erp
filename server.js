@@ -7,6 +7,7 @@ const root = __dirname;
 const dataDir = process.env.DATA_DIR || root;
 const dataFile = path.join(dataDir, "data.json");
 const backupDir = path.join(dataDir, "backups");
+const dailyBackupMs = 24 * 60 * 60 * 1000;
 
 const defaultData = {
   settings: { exchangeRate: 0.22, displayCurrency: "JPY" },
@@ -145,7 +146,7 @@ function serveFile(request, response) {
 }
 
 ensureDataFile();
-setInterval(() => writeBackup("scheduled"), 6 * 60 * 60 * 1000);
+setInterval(() => writeBackup("daily"), dailyBackupMs);
 
 const server = http.createServer(async (request, response) => {
   if (request.url === "/api/data" && request.method === "GET") {
