@@ -85,6 +85,8 @@
             <input data-field="customer" data-i18n-placeholder="customerName" placeholder="客戶姓名" />
             <div class="money-field"><input data-field="price" inputmode="decimal" data-i18n-placeholder="price" placeholder="商品金額" /><select data-currency-for="price"><option value="JPY">JPY</option><option value="TWD">TWD</option></select></div>
             <input data-field="stock" inputmode="numeric" data-i18n-placeholder="stock" placeholder="庫存" />
+            <label class="file-field"><span data-i18n="productImage">商品圖片</span><input id="productImageFile" type="file" accept="image/*" /></label>
+            <input type="hidden" data-field="image" />
             <button class="primary-button" type="submit" data-i18n="save">儲存</button>
           </form>
           <div id="productList" class="list"></div>
@@ -94,6 +96,7 @@
           <div class="section-title"><h2 data-i18n="purchaseItems">進貨項目</h2><button class="small-button" data-open-form="purchaseForm" type="button" data-i18n="addPurchase">新增進貨</button></div>
           <form id="purchaseForm" class="quick-form hidden" data-collection="purchaseItems">
             <select id="purchaseProduct" data-field="productId"></select>
+            <input id="purchaseItemName" data-field="item" data-i18n-placeholder="itemName" placeholder="商品名稱" />
             <input data-field="supplier" data-i18n-placeholder="supplier" placeholder="供應商 / 店家" />
             <input id="purchaseQuantity" data-field="quantity" inputmode="numeric" data-i18n-placeholder="quantity" placeholder="數量" />
             <div class="money-field"><input id="purchaseUnitCost" data-field="unitCost" inputmode="decimal" data-i18n-placeholder="unitCost" placeholder="進貨單價" /><select data-currency-for="unitCost"><option value="JPY">JPY</option><option value="TWD">TWD</option></select></div>

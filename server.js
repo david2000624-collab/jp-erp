@@ -15,8 +15,8 @@ const defaultData = {
     { id: "O-002", customer: "Cho", productId: "P-002", item: "限定周邊", quantity: 2, unitPrice: 6800, total: 13600, status: "已採購" },
   ],
   products: [
-    { id: "P-001", name: "藥妝補貨", customer: "林小姐", price: 12800, stock: 0 },
-    { id: "P-002", name: "限定周邊", customer: "Cho", price: 6800, stock: 0 },
+    { id: "P-001", name: "藥妝補貨", customer: "林小姐", price: 12800, stock: 0, image: "" },
+    { id: "P-002", name: "限定周邊", customer: "Cho", price: 6800, stock: 0, image: "" },
   ],
   purchaseItems: [
     { id: "I-001", productId: "P-001", item: "藥妝補貨", supplier: "大阪藥妝店", quantity: 1, unitCost: 11800, shippingCost: 500, transportCost: 0, totalCost: 12300, status: "待採購", stocked: false },
@@ -67,7 +67,7 @@ function normalizeData(data) {
   const merged = { ...defaultData, ...data, settings: { ...defaultData.settings, ...(data.settings || {}) } };
   merged.purchaseItems = merged.purchaseItems || [];
   merged.inventoryLogs = merged.inventoryLogs || [];
-  merged.products = (merged.products || []).map((product) => ({ ...product, stock: Number(product.stock || 0) }));
+  merged.products = (merged.products || []).map((product) => ({ ...product, stock: Number(product.stock || 0), image: product.image || "" }));
   merged.customers = (merged.customers || []).map((customer) => ({ ...customer, paymentStatus: customer.paymentStatus || "未付款" }));
   merged.orders = (merged.orders || []).map((order) => {
     const product = (merged.products || []).find((item) => item.id === order.productId || item.name === order.item);
@@ -103,7 +103,7 @@ function readBody(request) {
     let body = "";
     request.on("data", (chunk) => {
       body += chunk;
-      if (body.length > 2_000_000) request.destroy();
+      if (body.length > 8_000_000) request.destroy();
     });
     request.on("end", () => resolve(body));
     request.on("error", reject);
