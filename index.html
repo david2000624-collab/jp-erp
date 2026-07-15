@@ -43,6 +43,7 @@
         <section class="summary-grid" aria-label="ERP summary">
           <article class="summary-card"><span data-i18n="pendingOrders">待處理訂單</span><strong id="pendingOrders">0</strong></article>
           <article class="summary-card"><span data-i18n="purchaseItems">進貨項目</span><strong id="purchaseCount">0</strong></article>
+          <article class="summary-card"><span data-i18n="inventory">庫存</span><strong id="inventoryUnits">0</strong></article>
           <article class="summary-card"><span data-i18n="unpaidCustomers">未付款客戶</span><strong id="unpaidCustomers">0</strong></article>
           <article class="summary-card"><span data-i18n="advanceTotal">代墊總額</span><strong id="advanceTotal">¥0</strong></article>
         </section>
@@ -51,6 +52,7 @@
           <button class="tab active" data-view="orders" type="button" data-i18n="orders">訂單</button>
           <button class="tab" data-view="products" type="button" data-i18n="products">商品</button>
           <button class="tab" data-view="purchaseItems" type="button" data-i18n="purchaseItems">進貨</button>
+          <button class="tab" data-view="inventory" type="button" data-i18n="inventory">庫存</button>
           <button class="tab" data-view="packages" type="button" data-i18n="packages">包裹</button>
           <button class="tab" data-view="shipping" type="button" data-i18n="shipping">出貨</button>
           <button class="tab" data-view="customers" type="button" data-i18n="customers">客戶</button>
@@ -98,6 +100,28 @@
             <button class="primary-button" type="submit" data-i18n="save">儲存</button>
           </form>
           <div id="purchaseList" class="list"></div>
+        </section>
+
+        <section id="inventory" class="view">
+          <div class="section-title"><h2 data-i18n="inventory">庫存</h2><button class="small-button" data-open-form="inventoryForm" type="button" data-i18n="addInventoryLog">調整庫存</button></div>
+          <form id="inventoryForm" class="quick-form hidden">
+            <select id="inventoryProduct" data-field="productId"></select>
+            <select id="inventoryType" data-field="type">
+              <option value="in" data-i18n="stockIn">入庫存</option>
+              <option value="out" data-i18n="stockOut">出庫</option>
+              <option value="set" data-i18n="stockSet">盤點設定</option>
+            </select>
+            <input id="inventoryQuantity" data-field="quantity" inputmode="numeric" data-i18n-placeholder="quantity" placeholder="數量" />
+            <input id="inventoryNote" data-field="note" data-i18n-placeholder="inventoryNote" placeholder="備註" />
+            <button class="primary-button" type="submit" data-i18n="save">儲存</button>
+          </form>
+          <div class="advance-box inventory-stats">
+            <div><span data-i18n="totalUnits">總庫存數</span><strong id="inventoryTotalUnits">0</strong></div>
+            <div><span data-i18n="lowStock">低庫存</span><strong id="inventoryLowStock">0</strong></div>
+            <div><span data-i18n="inventoryValue">庫存價值</span><strong id="inventoryValue">¥0</strong></div>
+            <div><span data-i18n="inventoryHistory">庫存紀錄</span><strong id="inventoryLogCount">0</strong></div>
+          </div>
+          <div id="inventoryList" class="list"></div>
         </section>
 
         <section id="packages" class="view">
@@ -164,6 +188,7 @@
         <button class="bottom-link active" data-view="orders" type="button" data-i18n="orders">訂單</button>
         <button class="bottom-link" data-view="products" type="button" data-i18n="products">商品</button>
         <button class="bottom-link" data-view="purchaseItems" type="button" data-i18n="purchaseItems">進貨</button>
+        <button class="bottom-link" data-view="inventory" type="button" data-i18n="inventory">庫存</button>
         <button class="bottom-link" data-view="settings" type="button" data-i18n="settings">設定</button>
       </nav>
     </section>

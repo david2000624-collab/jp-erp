@@ -21,6 +21,7 @@ const defaultData = {
   purchaseItems: [
     { id: "I-001", productId: "P-001", item: "藥妝補貨", supplier: "大阪藥妝店", quantity: 1, unitCost: 11800, shippingCost: 500, transportCost: 0, totalCost: 12300, status: "待採購", stocked: false },
   ],
+  inventoryLogs: [],
   packages: [{ id: "B-001", no: "JP-WH-001", customer: "林小姐", status: "日本倉入庫" }],
   shipping: [{ id: "S-001", customer: "林小姐", method: "空運", status: "待出貨" }],
   customers: [
@@ -65,6 +66,7 @@ function writeBackup(reason = "auto") {
 function normalizeData(data) {
   const merged = { ...defaultData, ...data, settings: { ...defaultData.settings, ...(data.settings || {}) } };
   merged.purchaseItems = merged.purchaseItems || [];
+  merged.inventoryLogs = merged.inventoryLogs || [];
   merged.products = (merged.products || []).map((product) => ({ ...product, stock: Number(product.stock || 0) }));
   merged.customers = (merged.customers || []).map((customer) => ({ ...customer, paymentStatus: customer.paymentStatus || "未付款" }));
   merged.orders = (merged.orders || []).map((order) => {
@@ -81,6 +83,13 @@ function normalizeData(data) {
     const transportCost = Number(item.transportCost || 0);
     return { ...item, productId: item.productId || product?.id || "", item: item.item || product?.name || "", quantity, unitCost, shippingCost, transportCost, totalCost: Number(item.totalCost || quantity * unitCost + shippingCost + transportCost), status: item.status || "待採購", stocked: Boolean(item.stocked) };
   });
+  merged.inventoryLogs = (merged.inventoryLogs || []).map((log) => ({
+    ...log,
+    quantity: Number(log.quantity || 0),
+    beforeStock: Number(log.beforeStock || 0),
+    afterStock: Number(log.afterStock || 0),
+    createdAt: log.createdAt || new Date().toISOString(),
+  }));
   return merged;
 }
 
