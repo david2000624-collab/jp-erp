@@ -18,6 +18,9 @@ const defaultData = {
     { id: "P-001", name: "藥妝補貨", customer: "林小姐", price: 12800 },
     { id: "P-002", name: "限定周邊", customer: "Cho", price: 6800 },
   ],
+  purchaseItems: [
+    { id: "I-001", productId: "P-001", item: "藥妝補貨", supplier: "大阪藥妝店", quantity: 1, unitCost: 11800, totalCost: 11800, status: "待採購" },
+  ],
   packages: [{ id: "B-001", no: "JP-WH-001", customer: "林小姐", status: "日本倉入庫" }],
   shipping: [{ id: "S-001", customer: "林小姐", method: "空運", status: "待出貨" }],
   customers: [
@@ -54,34 +57,26 @@ function timestamp() {
 function writeBackup(reason = "auto") {
   ensureDataFile();
   if (!fs.existsSync(dataFile)) return;
-  const name = `data-${reason}-${timestamp()}.json`;
-  fs.copyFileSync(dataFile, path.join(backupDir, name));
-  const backups = fs
-    .readdirSync(backupDir)
-    .filter((file) => file.endsWith(".json"))
-    .sort()
-    .reverse();
+  fs.copyFileSync(dataFile, path.join(backupDir, `data-${reason}-${timestamp()}.json`));
+  const backups = fs.readdirSync(backupDir).filter((file) => file.endsWith(".json")).sort().reverse();
   backups.slice(30).forEach((file) => fs.unlinkSync(path.join(backupDir, file)));
 }
 
 function normalizeData(data) {
   const merged = { ...defaultData, ...data, settings: { ...defaultData.settings, ...(data.settings || {}) } };
-  merged.customers = (merged.customers || []).map((customer) => ({
-    ...customer,
-    paymentStatus: customer.paymentStatus || "未付款",
-  }));
+  merged.purchaseItems = merged.purchaseItems || [];
+  merged.customers = (merged.customers || []).map((customer) => ({ ...customer, paymentStatus: customer.paymentStatus || "未付款" }));
   merged.orders = (merged.orders || []).map((order) => {
     const product = (merged.products || []).find((item) => item.id === order.productId || item.name === order.item);
     const quantity = Number(order.quantity || 1);
     const unitPrice = Number(order.unitPrice || product?.price || order.total || 0);
-    return {
-      ...order,
-      productId: order.productId || product?.id || "",
-      item: order.item || product?.name || "",
-      quantity,
-      unitPrice,
-      total: Number(order.total || quantity * unitPrice),
-    };
+    return { ...order, productId: order.productId || product?.id || "", item: order.item || product?.name || "", quantity, unitPrice, total: Number(order.total || quantity * unitPrice) };
+  });
+  merged.purchaseItems = (merged.purchaseItems || []).map((item) => {
+    const product = (merged.products || []).find((productItem) => productItem.id === item.productId || productItem.name === item.item);
+    const quantity = Number(item.quantity || 1);
+    const unitCost = Number(item.unitCost || item.totalCost || product?.price || 0);
+    return { ...item, productId: item.productId || product?.id || "", item: item.item || product?.name || "", quantity, unitCost, totalCost: Number(item.totalCost || quantity * unitCost), status: item.status || "待採購" };
   });
   return merged;
 }
@@ -163,9 +158,7 @@ const server = http.createServer(async (request, response) => {
 
   if (request.url === "/api/backups" && request.method === "GET") {
     ensureDataFile();
-    sendJson(response, 200, {
-      backups: fs.readdirSync(backupDir).filter((file) => file.endsWith(".json")).sort().reverse(),
-    });
+    sendJson(response, 200, { backups: fs.readdirSync(backupDir).filter((file) => file.endsWith(".json")).sort().reverse() });
     return;
   }
 
