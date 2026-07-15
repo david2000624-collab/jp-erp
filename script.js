@@ -7,9 +7,9 @@ const translations = {
     orders: "訂單", products: "商品", purchaseItems: "進貨項目", packages: "包裹", shipping: "出貨", customers: "客戶", accounting: "對帳", settings: "設定",
     addOrder: "新增訂單", addProduct: "新增商品", addPurchase: "新增進貨", addPackage: "新增包裹", addShipment: "新增出貨", addCustomer: "新增客戶", addPayment: "新增付款",
     save: "儲存", saveSettings: "儲存設定", edit: "修改", delete: "刪除", customerName: "客戶姓名", itemName: "商品名稱", price: "商品金額", paidAmount: "付款金額",
-    quantity: "數量", unitPrice: "單價", unitCost: "進貨單價", shippingCost: "運費", supplier: "供應商 / 店家", orderTotal: "訂單總額", purchaseTotal: "進貨總成本",
+    quantity: "數量", unitPrice: "單價", unitCost: "進貨單價", shippingCost: "運費", transportCost: "交通費", supplier: "供應商 / 店家", orderTotal: "訂單總額", purchaseTotal: "進貨總成本",
     koseiAdvance: "kosei 代墊", choAdvance: "cho 代墊", advanceTwd: "台幣換算", backupStatus: "自動備份", exchangeRate: "日幣換台幣匯率", displayCurrency: "顯示幣別",
-    loginFailed: "帳號或密碼錯誤", noData: "目前沒有資料", paidBy: "付款人", customer: "客戶", method: "方式", contact: "聯絡方式", confirmDelete: "確定要刪除這筆資料嗎？", shippingFee: "運費"
+    loginFailed: "帳號或密碼錯誤", noData: "目前沒有資料", paidBy: "付款人", customer: "客戶", method: "方式", contact: "聯絡方式", confirmDelete: "確定要刪除這筆資料嗎？", shippingFee: "運費", transportFee: "交通費"
   },
   ja: {
     appSubtitle: "日本購入代行バックオフィス", loginTitle: "購入代行 ERP", language: "言語", account: "アカウント", password: "パスワード", login: "ログイン", logout: "ログアウト",
@@ -17,9 +17,9 @@ const translations = {
     orders: "注文", products: "商品", purchaseItems: "仕入項目", packages: "荷物", shipping: "出荷", customers: "顧客", accounting: "精算", settings: "設定",
     addOrder: "注文追加", addProduct: "商品追加", addPurchase: "仕入追加", addPackage: "荷物追加", addShipment: "出荷追加", addCustomer: "顧客追加", addPayment: "支払い追加",
     save: "保存", saveSettings: "設定保存", edit: "編集", delete: "削除", customerName: "顧客名", itemName: "商品名", price: "商品金額", paidAmount: "支払金額",
-    quantity: "数量", unitPrice: "単価", unitCost: "仕入単価", shippingCost: "送料", supplier: "仕入先 / 店舗", orderTotal: "注文合計", purchaseTotal: "仕入合計",
+    quantity: "数量", unitPrice: "単価", unitCost: "仕入単価", shippingCost: "送料", transportCost: "交通費", supplier: "仕入先 / 店舗", orderTotal: "注文合計", purchaseTotal: "仕入合計",
     koseiAdvance: "kosei 立替", choAdvance: "cho 立替", advanceTwd: "台湾ドル換算", backupStatus: "自動バックアップ", exchangeRate: "JPYからTWDのレート", displayCurrency: "表示通貨",
-    loginFailed: "アカウントまたはパスワードが違います", noData: "データがありません", paidBy: "支払者", customer: "顧客", method: "方法", contact: "連絡先", confirmDelete: "このデータを削除しますか？", shippingFee: "送料"
+    loginFailed: "アカウントまたはパスワードが違います", noData: "データがありません", paidBy: "支払者", customer: "顧客", method: "方法", contact: "連絡先", confirmDelete: "このデータを削除しますか？", shippingFee: "送料", transportFee: "交通費"
   }
 };
 
@@ -34,7 +34,7 @@ const defaultData = {
     { id: "P-002", name: "限定周邊", customer: "Cho", price: 6800 }
   ],
   purchaseItems: [
-    { id: "I-001", productId: "P-001", item: "藥妝補貨", supplier: "大阪藥妝店", quantity: 1, unitCost: 11800, shippingCost: 500, totalCost: 12300, status: "待採購" }
+    { id: "I-001", productId: "P-001", item: "藥妝補貨", supplier: "大阪藥妝店", quantity: 1, unitCost: 11800, shippingCost: 500, transportCost: 0, totalCost: 12300, status: "待採購" }
   ],
   packages: [{ id: "B-001", no: "JP-WH-001", customer: "林小姐", status: "日本倉入庫" }],
   shipping: [{ id: "S-001", customer: "林小姐", method: "空運", status: "待出貨" }],
@@ -45,7 +45,7 @@ const defaultData = {
 const config = {
   orders: { prefix: "O", formId: "orderForm", numeric: ["quantity"], money: ["unitPrice"] },
   products: { prefix: "P", formId: "productForm", money: ["price"] },
-  purchaseItems: { prefix: "I", formId: "purchaseForm", numeric: ["quantity"], money: ["unitCost", "shippingCost"] },
+  purchaseItems: { prefix: "I", formId: "purchaseForm", numeric: ["quantity"], money: ["unitCost", "shippingCost", "transportCost"] },
   packages: { prefix: "B", formId: "packageForm" },
   shipping: { prefix: "S", formId: "shippingForm" },
   customers: { prefix: "C", formId: "customerForm" },
@@ -72,7 +72,8 @@ function normalize(data) {
     const quantity = Number(item.quantity || 1);
     const unitCost = Number(item.unitCost || product?.price || 0);
     const shippingCost = Number(item.shippingCost || 0);
-    return { ...item, productId: item.productId || product?.id || "", item: item.item || product?.name || "", quantity, unitCost, shippingCost, totalCost: quantity * unitCost + shippingCost, status: item.status || "待採購" };
+    const transportCost = Number(item.transportCost || 0);
+    return { ...item, productId: item.productId || product?.id || "", item: item.item || product?.name || "", quantity, unitCost, shippingCost, transportCost, totalCost: quantity * unitCost + shippingCost + transportCost, status: item.status || "待採購" };
   });
   return merged;
 }
@@ -145,7 +146,8 @@ function updatePurchaseTotalPreview() {
   const form = document.querySelector("#purchaseForm");
   const unitCost = toJpy(document.querySelector("#purchaseUnitCost").value, currencySelect(form, "unitCost").value);
   const shippingCost = toJpy(document.querySelector("#purchaseShippingCost").value, currencySelect(form, "shippingCost").value);
-  document.querySelector("#purchaseTotalPreview").textContent = money(Number(document.querySelector("#purchaseQuantity").value || 0) * unitCost + shippingCost);
+  const transportCost = toJpy(document.querySelector("#purchaseTransportCost").value, currencySelect(form, "transportCost").value);
+  document.querySelector("#purchaseTotalPreview").textContent = money(Number(document.querySelector("#purchaseQuantity").value || 0) * unitCost + shippingCost + transportCost);
 }
 function syncOrderPriceFromProduct() {
   const product = state.data.products.find((item) => item.id === document.querySelector("#orderProduct").value);
@@ -167,7 +169,7 @@ function renderProducts() {
   document.querySelector("#productList").innerHTML = state.data.products.map((product) => `<article class="item-card"><div class="item-top"><strong>${product.name}</strong><span class="pill">${money(product.price)} / ${money(product.price, "TWD")}</span></div><span class="meta">${text("customer")}: ${product.customer} / ${product.id}</span>${actions("products", product.id)}</article>`).join("") || emptyList();
 }
 function renderPurchaseItems() {
-  document.querySelector("#purchaseList").innerHTML = state.data.purchaseItems.map((item) => `<article class="item-card"><div class="item-top"><strong>${productName(item.productId, item.item)}</strong><span class="${badgeClass(item.status)}">${item.status}</span></div><span class="meta">${item.supplier || "-"} / ${item.quantity} x ${money(item.unitCost)} + ${text("shippingFee")} ${money(item.shippingCost)} = ${money(item.totalCost)}</span>${actions("purchaseItems", item.id)}</article>`).join("") || emptyList();
+  document.querySelector("#purchaseList").innerHTML = state.data.purchaseItems.map((item) => `<article class="item-card"><div class="item-top"><strong>${productName(item.productId, item.item)}</strong><span class="${badgeClass(item.status)}">${item.status}</span></div><span class="meta">${item.supplier || "-"} / ${item.quantity} x ${money(item.unitCost)} + ${text("shippingFee")} ${money(item.shippingCost)} + ${text("transportFee")} ${money(item.transportCost)} = ${money(item.totalCost)}</span>${actions("purchaseItems", item.id)}</article>`).join("") || emptyList();
 }
 function renderPackages() {
   document.querySelector("#packageList").innerHTML = state.data.packages.map((pack) => `<article class="item-card"><div class="item-top"><strong>${pack.no}</strong><span class="${badgeClass(pack.status)}">${pack.status}</span></div><span class="meta">${text("customer")}: ${pack.customer}</span>${actions("packages", pack.id)}</article>`).join("") || emptyList();
@@ -224,7 +226,7 @@ function formValues(form, collection) {
   if (collection === "purchaseItems") {
     const product = state.data.products.find((item) => item.id === values.productId);
     values.item = product?.name || "";
-    values.totalCost = Number(values.quantity || 0) * Number(values.unitCost || 0) + Number(values.shippingCost || 0);
+    values.totalCost = Number(values.quantity || 0) * Number(values.unitCost || 0) + Number(values.shippingCost || 0) + Number(values.transportCost || 0);
   }
   return values;
 }
@@ -273,6 +275,7 @@ document.querySelector("#purchaseProduct").addEventListener("change", syncPurcha
 document.querySelector("#purchaseQuantity").addEventListener("input", updatePurchaseTotalPreview);
 document.querySelector("#purchaseUnitCost").addEventListener("input", updatePurchaseTotalPreview);
 document.querySelector("#purchaseShippingCost").addEventListener("input", updatePurchaseTotalPreview);
+document.querySelector("#purchaseTransportCost").addEventListener("input", updatePurchaseTotalPreview);
 document.querySelectorAll("[data-currency-for]").forEach((select) => select.addEventListener("change", () => { updateOrderTotalPreview(); updatePurchaseTotalPreview(); }));
 document.querySelector("#orderForm").addEventListener("submit", (event) => upsertFromForm(event, "orders"));
 document.querySelector("#productForm").addEventListener("submit", (event) => upsertFromForm(event, "products"));
