@@ -205,8 +205,10 @@ function exportData() {
   const link = document.createElement("a");
   link.href = URL.createObjectURL(blob);
   link.download = `jp-erp-data-${new Date().toISOString().slice(0, 10)}.json`;
+  link.style.display = "none";
+  document.body.appendChild(link);
   link.click();
-  URL.revokeObjectURL(link.href);
+  setTimeout(() => { URL.revokeObjectURL(link.href); link.remove(); }, 1200);
 }
 
 function excelText(value) {
@@ -224,23 +226,31 @@ function excelTable(title, headers, rows) {
 }
 
 function exportExcel() {
-  const data = normalize(state.data);
-  const tables = [
-    excelTable(text("orders"), ["ID", text("customer"), text("products"), text("quantity"), "JPY", "TWD", "Status"], data.orders.map((order) => [order.id, order.customer, productName(order.productId, order.item), order.quantity, excelMoney(order.total), excelMoney(jpyToTwd(order.total)), order.status])),
-    excelTable(text("products"), ["ID", text("itemName"), text("customer"), text("stock"), text("price"), text("shippingFee"), text("salePrice"), text("averageUnitPrice")], data.products.map((product) => [product.id, product.name, product.customer, product.stock, excelMoney(product.price), excelMoney(product.shippingCost), excelMoney(product.salePrice || product.price), excelMoney(averageUnitPrice(product))])),
-    excelTable(text("purchaseItems"), ["ID", text("itemName"), text("supplier"), text("quantity"), text("unitCost"), text("shippingFee"), text("transportFee"), text("taxFee"), text("purchaseTotal"), "Status"], data.purchaseItems.map((item) => [item.id, productName(item.productId, item.item), item.supplier, item.quantity, excelMoney(item.unitCost), excelMoney(item.shippingCost), excelMoney(item.transportCost), excelMoney(item.taxCost), excelMoney(item.totalCost), item.stocked ? text("stocked") : item.status])),
-    excelTable(text("inventory"), ["ID", text("itemName"), text("stock"), text("price"), text("salePrice"), text("inventoryValue"), text("salesValue")], data.products.map((product) => [product.id, product.name, product.stock, excelMoney(product.price), excelMoney(product.salePrice || product.price), excelMoney(Number(product.stock || 0) * Number(product.price || 0)), excelMoney(Number(product.stock || 0) * Number(product.salePrice || product.price || 0))])),
-    excelTable(text("accounting"), ["ID", text("productAdvance"), text("paidBy"), text("paidAmount"), "TWD", text("paymentNote")], data.payments.map((payment) => [payment.id, paymentTitle(payment), payment.payer, excelMoney(payment.amount), excelMoney(jpyToTwd(payment.amount)), payment.note])),
-    excelTable(text("customers"), ["ID", text("customerName"), text("contact"), "Status"], data.customers.map((customer) => [customer.id, customer.name, customer.contact, customer.paymentStatus])),
-    excelTable(text("inventoryHistory"), ["ID", text("itemName"), text("movementType"), text("quantity"), text("beforeStock"), text("afterStock"), text("operator"), text("inventoryNote")], data.inventoryLogs.map((log) => [log.id, productName(log.productId), inventoryTypeLabel(log.type), log.quantity, log.beforeStock, log.afterStock, log.user, log.note]))
-  ].join("");
-  const html = `\uFEFF<html><head><meta charset="UTF-8"></head><body>${tables}</body></html>`;
-  const blob = new Blob([html], { type: "application/vnd.ms-excel;charset=utf-8" });
-  const link = document.createElement("a");
-  link.href = URL.createObjectURL(blob);
-  link.download = `jp-erp-${new Date().toISOString().slice(0, 10)}.xls`;
-  link.click();
-  URL.revokeObjectURL(link.href);
+  try {
+    const data = normalize(state.data);
+    const tables = [
+      excelTable(text("orders"), ["ID", text("customer"), text("products"), text("quantity"), "JPY", "TWD", "Status"], data.orders.map((order) => [order.id, order.customer, productName(order.productId, order.item), order.quantity, excelMoney(order.total), excelMoney(jpyToTwd(order.total)), order.status])),
+      excelTable(text("products"), ["ID", text("itemName"), text("customer"), text("stock"), text("price"), text("shippingFee"), text("salePrice"), text("averageUnitPrice")], data.products.map((product) => [product.id, product.name, product.customer, product.stock, excelMoney(product.price), excelMoney(product.shippingCost), excelMoney(product.salePrice || product.price), excelMoney(averageUnitPrice(product))])),
+      excelTable(text("purchaseItems"), ["ID", text("itemName"), text("supplier"), text("quantity"), text("unitCost"), text("shippingFee"), text("transportFee"), text("taxFee"), text("purchaseTotal"), "Status"], data.purchaseItems.map((item) => [item.id, productName(item.productId, item.item), item.supplier, item.quantity, excelMoney(item.unitCost), excelMoney(item.shippingCost), excelMoney(item.transportCost), excelMoney(item.taxCost), excelMoney(item.totalCost), item.stocked ? text("stocked") : item.status])),
+      excelTable(text("inventory"), ["ID", text("itemName"), text("stock"), text("price"), text("salePrice"), text("inventoryValue"), text("salesValue")], data.products.map((product) => [product.id, product.name, product.stock, excelMoney(product.price), excelMoney(product.salePrice || product.price), excelMoney(Number(product.stock || 0) * Number(product.price || 0)), excelMoney(Number(product.stock || 0) * Number(product.salePrice || product.price || 0))])),
+      excelTable(text("accounting"), ["ID", text("productAdvance"), text("paidBy"), text("paidAmount"), "TWD", text("paymentNote")], data.payments.map((payment) => [payment.id, paymentTitle(payment), payment.payer, excelMoney(payment.amount), excelMoney(jpyToTwd(payment.amount)), payment.note])),
+      excelTable(text("customers"), ["ID", text("customerName"), text("contact"), "Status"], data.customers.map((customer) => [customer.id, customer.name, customer.contact, customer.paymentStatus])),
+      excelTable(text("inventoryHistory"), ["ID", text("itemName"), text("movementType"), text("quantity"), text("beforeStock"), text("afterStock"), text("operator"), text("inventoryNote")], data.inventoryLogs.map((log) => [log.id, productName(log.productId), inventoryTypeLabel(log.type), log.quantity, log.beforeStock, log.afterStock, log.user, log.note]))
+    ].join("");
+    const html = `\uFEFF<html><head><meta charset="UTF-8"></head><body>${tables}</body></html>`;
+    const blob = new Blob([html], { type: "application/vnd.ms-excel;charset=utf-8" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `jp-erp-${new Date().toISOString().slice(0, 10)}.xls`;
+    link.target = "_blank";
+    link.rel = "noopener";
+    link.style.display = "none";
+    document.body.appendChild(link);
+    link.click();
+    setTimeout(() => { URL.revokeObjectURL(link.href); link.remove(); }, 3000);
+  } catch (error) {
+    alert(text("noData"));
+  }
 }
 
 function importData(event) {
