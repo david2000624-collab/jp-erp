@@ -19,7 +19,7 @@ const defaultData = {
     { id: "P-002", name: "限定周邊", customer: "Cho", price: 6800 },
   ],
   purchaseItems: [
-    { id: "I-001", productId: "P-001", item: "藥妝補貨", supplier: "大阪藥妝店", quantity: 1, unitCost: 11800, totalCost: 11800, status: "待採購" },
+    { id: "I-001", productId: "P-001", item: "藥妝補貨", supplier: "大阪藥妝店", quantity: 1, unitCost: 11800, shippingCost: 500, totalCost: 12300, status: "待採購" },
   ],
   packages: [{ id: "B-001", no: "JP-WH-001", customer: "林小姐", status: "日本倉入庫" }],
   shipping: [{ id: "S-001", customer: "林小姐", method: "空運", status: "待出貨" }],
@@ -76,7 +76,8 @@ function normalizeData(data) {
     const product = (merged.products || []).find((productItem) => productItem.id === item.productId || productItem.name === item.item);
     const quantity = Number(item.quantity || 1);
     const unitCost = Number(item.unitCost || item.totalCost || product?.price || 0);
-    return { ...item, productId: item.productId || product?.id || "", item: item.item || product?.name || "", quantity, unitCost, totalCost: Number(item.totalCost || quantity * unitCost), status: item.status || "待採購" };
+    const shippingCost = Number(item.shippingCost || 0);
+    return { ...item, productId: item.productId || product?.id || "", item: item.item || product?.name || "", quantity, unitCost, shippingCost, totalCost: Number(item.totalCost || quantity * unitCost + shippingCost), status: item.status || "待採購" };
   });
   return merged;
 }

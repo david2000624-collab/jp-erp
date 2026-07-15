@@ -7,7 +7,7 @@ const translations = {
     orders: "訂單", products: "商品", purchaseItems: "進貨項目", packages: "包裹", shipping: "出貨", customers: "客戶", accounting: "對帳",
     addOrder: "新增訂單", addProduct: "新增商品", addPurchase: "新增進貨", addPackage: "新增包裹", addShipment: "新增出貨", addCustomer: "新增客戶", addPayment: "新增付款",
     save: "儲存", saveRate: "儲存匯率", edit: "修改", delete: "刪除", customerName: "客戶姓名", itemName: "商品名稱", priceYen: "商品金額 JPY",
-    paidAmount: "付款金額 JPY", quantity: "數量", unitPrice: "單價 JPY", unitCost: "進貨單價 JPY", supplier: "供應商 / 店家", orderTotal: "訂單總額", purchaseTotal: "進貨總成本",
+    paidAmount: "付款金額 JPY", quantity: "數量", unitPrice: "單價 JPY", unitCost: "進貨單價 JPY", shippingCost: "運費 JPY", supplier: "供應商 / 店家", orderTotal: "訂單總額", purchaseTotal: "進貨總成本",
     koseiAdvance: "kosei 代墊", choAdvance: "cho 代墊", advanceTwd: "台幣換算", backupStatus: "自動備份", exchangeRate: "日幣換台幣匯率",
     loginFailed: "帳號或密碼錯誤", noData: "目前沒有資料", paidBy: "付款人", customer: "客戶", method: "方式", contact: "聯絡方式", confirmDelete: "確定要刪除這筆資料嗎？"
   },
@@ -17,7 +17,7 @@ const translations = {
     orders: "注文", products: "商品", purchaseItems: "仕入項目", packages: "荷物", shipping: "出荷", customers: "顧客", accounting: "精算",
     addOrder: "注文追加", addProduct: "商品追加", addPurchase: "仕入追加", addPackage: "荷物追加", addShipment: "出荷追加", addCustomer: "顧客追加", addPayment: "支払い追加",
     save: "保存", saveRate: "レート保存", edit: "編集", delete: "削除", customerName: "顧客名", itemName: "商品名", priceYen: "商品金額 JPY",
-    paidAmount: "支払金額 JPY", quantity: "数量", unitPrice: "単価 JPY", unitCost: "仕入単価 JPY", supplier: "仕入先 / 店舗", orderTotal: "注文合計", purchaseTotal: "仕入合計",
+    paidAmount: "支払金額 JPY", quantity: "数量", unitPrice: "単価 JPY", unitCost: "仕入単価 JPY", shippingCost: "送料 JPY", supplier: "仕入先 / 店舗", orderTotal: "注文合計", purchaseTotal: "仕入合計",
     koseiAdvance: "kosei 立替", choAdvance: "cho 立替", advanceTwd: "台湾ドル換算", backupStatus: "自動バックアップ", exchangeRate: "JPYからTWDのレート",
     loginFailed: "アカウントまたはパスワードが違います", noData: "データがありません", paidBy: "支払者", customer: "顧客", method: "方法", contact: "連絡先", confirmDelete: "このデータを削除しますか？"
   }
@@ -34,7 +34,7 @@ const defaultData = {
     { id: "P-002", name: "限定周邊", customer: "Cho", price: 6800 }
   ],
   purchaseItems: [
-    { id: "I-001", productId: "P-001", item: "藥妝補貨", supplier: "大阪藥妝店", quantity: 1, unitCost: 11800, totalCost: 11800, status: "待採購" }
+    { id: "I-001", productId: "P-001", item: "藥妝補貨", supplier: "大阪藥妝店", quantity: 1, unitCost: 11800, shippingCost: 500, totalCost: 12300, status: "待採購" }
   ],
   packages: [{ id: "B-001", no: "JP-WH-001", customer: "林小姐", status: "日本倉入庫" }],
   shipping: [{ id: "S-001", customer: "林小姐", method: "空運", status: "待出貨" }],
@@ -45,7 +45,7 @@ const defaultData = {
 const config = {
   orders: { prefix: "O", formId: "orderForm", numeric: ["quantity", "unitPrice"] },
   products: { prefix: "P", formId: "productForm", numeric: ["price"] },
-  purchaseItems: { prefix: "I", formId: "purchaseForm", numeric: ["quantity", "unitCost"] },
+  purchaseItems: { prefix: "I", formId: "purchaseForm", numeric: ["quantity", "unitCost", "shippingCost"] },
   packages: { prefix: "B", formId: "packageForm" },
   shipping: { prefix: "S", formId: "shippingForm" },
   customers: { prefix: "C", formId: "customerForm" },
@@ -71,7 +71,8 @@ function normalize(data) {
     const product = (merged.products || []).find((productItem) => productItem.id === item.productId || productItem.name === item.item);
     const quantity = Number(item.quantity || 1);
     const unitCost = Number(item.unitCost || item.totalCost || product?.price || 0);
-    return { ...item, productId: item.productId || product?.id || "", item: item.item || product?.name || "", quantity, unitCost, totalCost: Number(item.totalCost || quantity * unitCost), status: item.status || "待採購" };
+    const shippingCost = Number(item.shippingCost || 0);
+    return { ...item, productId: item.productId || product?.id || "", item: item.item || product?.name || "", quantity, unitCost, shippingCost, totalCost: Number(item.totalCost || quantity * unitCost + shippingCost), status: item.status || "待採購" };
   });
   return merged;
 }
@@ -125,7 +126,7 @@ function renderProductSelects() {
   document.querySelector("#paymentProduct").innerHTML = state.data.products.map((product) => `<option value="${product.id}">${product.name} / ${product.customer} / ${money(product.price)}</option>`).join("");
 }
 function updateOrderTotalPreview() { document.querySelector("#orderTotalPreview").textContent = money(Number(document.querySelector("#orderQuantity").value || 0) * Number(document.querySelector("#orderUnitPrice").value || 0)); }
-function updatePurchaseTotalPreview() { document.querySelector("#purchaseTotalPreview").textContent = money(Number(document.querySelector("#purchaseQuantity").value || 0) * Number(document.querySelector("#purchaseUnitCost").value || 0)); }
+function updatePurchaseTotalPreview() { document.querySelector("#purchaseTotalPreview").textContent = money(Number(document.querySelector("#purchaseQuantity").value || 0) * Number(document.querySelector("#purchaseUnitCost").value || 0) + Number(document.querySelector("#purchaseShippingCost").value || 0)); }
 function syncOrderPriceFromProduct() {
   const product = state.data.products.find((item) => item.id === document.querySelector("#orderProduct").value);
   if (product) document.querySelector("#orderUnitPrice").value = product.price || 0;
@@ -144,7 +145,7 @@ function renderProducts() {
   document.querySelector("#productList").innerHTML = state.data.products.map((product) => `<article class="item-card"><div class="item-top"><strong>${product.name}</strong><span class="pill">${money(product.price)} / ${money(yenToTwd(product.price), "TWD")}</span></div><span class="meta">${text("customer")}: ${product.customer} / ${product.id}</span>${actions("products", product.id)}</article>`).join("") || emptyList();
 }
 function renderPurchaseItems() {
-  document.querySelector("#purchaseList").innerHTML = state.data.purchaseItems.map((item) => `<article class="item-card"><div class="item-top"><strong>${productName(item.productId, item.item)}</strong><span class="${badgeClass(item.status)}">${item.status}</span></div><span class="meta">${item.supplier || "-"} / ${item.quantity} 件 x ${money(item.unitCost)} = ${money(item.totalCost)}</span>${actions("purchaseItems", item.id)}</article>`).join("") || emptyList();
+  document.querySelector("#purchaseList").innerHTML = state.data.purchaseItems.map((item) => `<article class="item-card"><div class="item-top"><strong>${productName(item.productId, item.item)}</strong><span class="${badgeClass(item.status)}">${item.status}</span></div><span class="meta">${item.supplier || "-"} / ${item.quantity} 件 x ${money(item.unitCost)} + 運費 ${money(item.shippingCost)} = ${money(item.totalCost)}</span>${actions("purchaseItems", item.id)}</article>`).join("") || emptyList();
 }
 function renderPackages() {
   document.querySelector("#packageList").innerHTML = state.data.packages.map((pack) => `<article class="item-card"><div class="item-top"><strong>${pack.no}</strong><span class="${badgeClass(pack.status)}">${pack.status}</span></div><span class="meta">${text("customer")}: ${pack.customer}</span>${actions("packages", pack.id)}</article>`).join("") || emptyList();
@@ -192,7 +193,7 @@ function formValues(form, collection) {
   if (collection === "purchaseItems") {
     const product = state.data.products.find((item) => item.id === values.productId);
     values.item = product?.name || "";
-    values.totalCost = Number(values.quantity || 0) * Number(values.unitCost || 0);
+    values.totalCost = Number(values.quantity || 0) * Number(values.unitCost || 0) + Number(values.shippingCost || 0);
   }
   return values;
 }
@@ -237,6 +238,7 @@ document.querySelector("#orderUnitPrice").addEventListener("input", updateOrderT
 document.querySelector("#purchaseProduct").addEventListener("change", syncPurchaseCostFromProduct);
 document.querySelector("#purchaseQuantity").addEventListener("input", updatePurchaseTotalPreview);
 document.querySelector("#purchaseUnitCost").addEventListener("input", updatePurchaseTotalPreview);
+document.querySelector("#purchaseShippingCost").addEventListener("input", updatePurchaseTotalPreview);
 document.querySelector("#orderForm").addEventListener("submit", (event) => upsertFromForm(event, "orders"));
 document.querySelector("#productForm").addEventListener("submit", (event) => upsertFromForm(event, "products"));
 document.querySelector("#purchaseForm").addEventListener("submit", (event) => upsertFromForm(event, "purchaseItems"));
