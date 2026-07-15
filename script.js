@@ -2,7 +2,7 @@ const accounts = { kosei: "0000", cho: "0624" };
 
 const translations = {
   zh: {
-    appSubtitle: "日本代購後台", loginTitle: "代購 ERP", language: "語言", account: "帳號", password: "密碼", login: "登入", logout: "登出",
+    appSubtitle: "日本代購後台", loginTitle: "代購 ERP", language: "語言", account: "帳號", password: "密碼", login: "登入", logout: "登出", jpyCurrency: "日幣", twdCurrency: "台幣",
     todayWork: "今日工作", dashboard: "總覽", pendingOrders: "待處理訂單", warehouseItems: "倉庫包裹", unpaidCustomers: "未付款客戶", advanceTotal: "代墊總額",
     orders: "訂單", products: "商品", purchaseItems: "進貨項目", inventory: "庫存", packages: "包裹", shipping: "出貨", customers: "客戶", accounting: "對帳", settings: "設定",
     addOrder: "新增訂單", addProduct: "新增商品", addPurchase: "新增進貨", addPackage: "新增包裹", addShipment: "新增出貨", addCustomer: "新增客戶", addPayment: "新增付款", addShippingAdvance: "新增運費代墊費用",
@@ -13,7 +13,7 @@ const translations = {
     addInventoryLog: "調整庫存", stockOut: "出庫", stockSet: "盤點設定", inventoryNote: "備註", movementType: "類型", inventoryHistory: "庫存紀錄", currentStock: "目前庫存", lowStock: "低庫存", inventoryValue: "庫存價值", salesValue: "可售金額", totalUnits: "總庫存數", beforeStock: "調整前", afterStock: "調整後", operator: "操作人"
   },
   ja: {
-    appSubtitle: "日本購入代行バックオフィス", loginTitle: "購入代行 ERP", language: "言語", account: "アカウント", password: "パスワード", login: "ログイン", logout: "ログアウト",
+    appSubtitle: "日本購入代行バックオフィス", loginTitle: "購入代行 ERP", language: "言語", account: "アカウント", password: "パスワード", login: "ログイン", logout: "ログアウト", jpyCurrency: "日本円", twdCurrency: "台湾ドル",
     todayWork: "本日の業務", dashboard: "概要", pendingOrders: "未処理注文", warehouseItems: "倉庫荷物", unpaidCustomers: "未払い顧客", advanceTotal: "立替合計",
     orders: "注文", products: "商品", purchaseItems: "仕入項目", inventory: "在庫", packages: "荷物", shipping: "出荷", customers: "顧客", accounting: "精算", settings: "設定",
     addOrder: "注文追加", addProduct: "商品追加", addPurchase: "仕入追加", addPackage: "荷物追加", addShipment: "出荷追加", addCustomer: "顧客追加", addPayment: "支払い追加", addShippingAdvance: "送料立替費用を追加",
@@ -112,6 +112,21 @@ function productName(productId, fallback = "") { return state.data.products.find
 function productById(productId) { return state.data.products.find((item) => item.id === productId); }
 function currencySelect(form, fieldName) { return form.querySelector(`[data-currency-for="${fieldName}"]`); }
 function moneyInputValue(jpyValue, currency) { const value = fromJpy(jpyValue, currency); return Number.isFinite(value) ? Math.round(value * 100) / 100 : 0; }
+function rememberCurrencySelections() {
+  document.querySelectorAll("[data-currency-for]").forEach((select) => { select.dataset.lastCurrency = select.value; });
+}
+function updateMoneyInputCurrency(select) {
+  const form = select.closest("form");
+  const field = form?.querySelector(`[data-field="${select.dataset.currencyFor}"]`);
+  const oldCurrency = select.dataset.lastCurrency || "JPY";
+  const newCurrency = select.value;
+  if (field && field.value !== "") {
+    field.value = moneyInputValue(toJpy(field.value, oldCurrency), newCurrency);
+  }
+  select.dataset.lastCurrency = newCurrency;
+  updateOrderTotalPreview();
+  updatePurchaseTotalPreview();
+}
 function shortDate(value) { return value ? new Date(value).toLocaleString(state.lang === "ja" ? "ja-JP" : "zh-TW", { month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" }) : ""; }
 function inventoryTypeLabel(type) { return type === "out" ? text("stockOut") : type === "set" ? text("stockSet") : text("stockIn"); }
 function paymentTypeLabel(type) { return type === "shipping" ? text("shippingAdvance") : text("productAdvance"); }
@@ -299,6 +314,7 @@ function renderAll() {
   if (!document.querySelector("#appShell")) return;
   state.data = normalize(state.data);
   renderProductSelects(); renderOrders(); renderProducts(); renderPurchaseItems(); renderInventory(); renderPackages(); renderShipping(); renderCustomers(); renderAccounting(); renderSettings(); renderSummary(); renderCurrencyToggle();
+  rememberCurrencySelections();
   updateOrderTotalPreview(); updatePurchaseTotalPreview();
 }
 
@@ -414,6 +430,7 @@ function openShippingAdvanceForm() {
   document.querySelector("#paymentType").value = "shipping";
   document.querySelector("#paymentNote").value = text("shippingAdvance");
   syncPaymentType();
+  rememberCurrencySelections();
   form.scrollIntoView({ behavior: "smooth", block: "center" });
 }
 
@@ -444,7 +461,7 @@ document.querySelector("#loginLang").addEventListener("change", (event) => setLa
 document.querySelector("#appLang").addEventListener("change", (event) => setLanguage(event.target.value));
 document.querySelectorAll("[data-currency-toggle]").forEach((button) => button.addEventListener("click", () => setDisplayCurrency(button.dataset.currencyToggle)));
 document.querySelectorAll(".tab, .bottom-link").forEach((button) => button.addEventListener("click", () => activateView(button.dataset.view)));
-document.querySelectorAll("[data-open-form]").forEach((button) => button.addEventListener("click", () => { const form = document.querySelector(`#${button.dataset.openForm}`); delete form.dataset.editingId; form.reset(); form.classList.toggle("hidden"); syncOrderPriceFromProduct(); syncPurchaseCostFromProduct(); syncPaymentType(); }));
+document.querySelectorAll("[data-open-form]").forEach((button) => button.addEventListener("click", () => { const form = document.querySelector(`#${button.dataset.openForm}`); delete form.dataset.editingId; form.reset(); form.classList.toggle("hidden"); syncOrderPriceFromProduct(); syncPurchaseCostFromProduct(); syncPaymentType(); rememberCurrencySelections(); }));
 document.querySelector("[data-open-shipping-advance]").addEventListener("click", openShippingAdvanceForm);
 document.querySelector("#orderProduct").addEventListener("change", syncOrderPriceFromProduct);
 document.querySelector("#orderQuantity").addEventListener("input", updateOrderTotalPreview);
@@ -456,7 +473,7 @@ document.querySelector("#purchaseShippingCost").addEventListener("input", update
 document.querySelector("#purchaseTransportCost").addEventListener("input", updatePurchaseTotalPreview);
 document.querySelector("#paymentType").addEventListener("change", syncPaymentType);
 document.querySelector("#productImageFile").addEventListener("change", handleProductImageUpload);
-document.querySelectorAll("[data-currency-for]").forEach((select) => select.addEventListener("change", () => { updateOrderTotalPreview(); updatePurchaseTotalPreview(); }));
+document.querySelectorAll("[data-currency-for]").forEach((select) => select.addEventListener("change", () => updateMoneyInputCurrency(select)));
 document.querySelector("#orderForm").addEventListener("submit", (event) => upsertFromForm(event, "orders"));
 document.querySelector("#productForm").addEventListener("submit", (event) => upsertFromForm(event, "products"));
 document.querySelector("#purchaseForm").addEventListener("submit", (event) => upsertFromForm(event, "purchaseItems"));
@@ -482,4 +499,5 @@ document.addEventListener("click", (event) => {
 if ("serviceWorker" in navigator && hasServer) navigator.serviceWorker.register("sw.js");
 applyLanguage();
 syncPaymentType();
+rememberCurrencySelections();
 if (state.currentUser) showApp(); else showLogin();
