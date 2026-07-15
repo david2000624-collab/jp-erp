@@ -201,6 +201,7 @@ h2 {
   z-index: 5;
   display: flex;
   justify-content: space-between;
+  align-items: flex-start;
   gap: 12px;
   padding: calc(14px + env(safe-area-inset-top)) 16px 14px;
   border-bottom: 1px solid var(--line);
@@ -211,11 +212,38 @@ h2 {
 .header-actions {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
   gap: 8px;
 }
 
 .header-actions select {
   width: 96px;
+}
+
+.currency-toggle {
+  display: inline-grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  min-height: 38px;
+  padding: 3px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+}
+
+.currency-toggle button {
+  min-width: 52px;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.currency-toggle button.active {
+  background: var(--accent);
+  color: #fff;
 }
 
 .content {

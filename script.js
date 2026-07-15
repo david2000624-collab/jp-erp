@@ -8,7 +8,7 @@ const translations = {
     addOrder: "新增訂單", addProduct: "新增商品", addPurchase: "新增進貨", addPackage: "新增包裹", addShipment: "新增出貨", addCustomer: "新增客戶", addPayment: "新增付款",
     save: "儲存", saveSettings: "儲存設定", edit: "修改", delete: "刪除", customerName: "客戶姓名", itemName: "商品名稱", price: "商品金額", paidAmount: "付款金額",
     quantity: "數量", unitPrice: "單價", unitCost: "進貨單價", shippingCost: "運費", transportCost: "交通費", supplier: "供應商 / 店家", stock: "庫存", orderTotal: "訂單總額", purchaseTotal: "進貨總成本",
-    koseiAdvance: "kosei 代墊", choAdvance: "cho 代墊", advanceTwd: "台幣換算", backupStatus: "自動備份", exchangeRate: "日幣換台幣匯率", displayCurrency: "顯示幣別",
+    koseiAdvance: "kosei 代墊", choAdvance: "cho 代墊", advanceTwd: "目前幣別", backupStatus: "自動備份", exchangeRate: "日幣換台幣匯率", displayCurrency: "顯示幣別",
     loginFailed: "帳號或密碼錯誤", noData: "目前沒有資料", paidBy: "付款人", customer: "客戶", method: "方式", contact: "聯絡方式", confirmDelete: "確定要刪除這筆資料嗎？", shippingFee: "運費", transportFee: "交通費", stockIn: "入庫存", stocked: "已入庫存",
     addInventoryLog: "調整庫存", stockOut: "出庫", stockSet: "盤點設定", inventoryNote: "備註", movementType: "類型", inventoryHistory: "庫存紀錄", currentStock: "目前庫存", lowStock: "低庫存", inventoryValue: "庫存價值", totalUnits: "總庫存數", beforeStock: "調整前", afterStock: "調整後", operator: "操作人"
   },
@@ -19,7 +19,7 @@ const translations = {
     addOrder: "注文追加", addProduct: "商品追加", addPurchase: "仕入追加", addPackage: "荷物追加", addShipment: "出荷追加", addCustomer: "顧客追加", addPayment: "支払い追加",
     save: "保存", saveSettings: "設定保存", edit: "編集", delete: "削除", customerName: "顧客名", itemName: "商品名", price: "商品金額", paidAmount: "支払金額",
     quantity: "数量", unitPrice: "単価", unitCost: "仕入単価", shippingCost: "送料", transportCost: "交通費", supplier: "仕入先 / 店舗", stock: "在庫", orderTotal: "注文合計", purchaseTotal: "仕入合計",
-    koseiAdvance: "kosei 立替", choAdvance: "cho 立替", advanceTwd: "台湾ドル換算", backupStatus: "自動バックアップ", exchangeRate: "JPYからTWDのレート", displayCurrency: "表示通貨",
+    koseiAdvance: "kosei 立替", choAdvance: "cho 立替", advanceTwd: "現在通貨", backupStatus: "自動バックアップ", exchangeRate: "JPYからTWDのレート", displayCurrency: "表示通貨",
     loginFailed: "アカウントまたはパスワードが違います", noData: "データがありません", paidBy: "支払者", customer: "顧客", method: "方法", contact: "連絡先", confirmDelete: "このデータを削除しますか？", shippingFee: "送料", transportFee: "交通費", stockIn: "在庫入庫", stocked: "入庫済み",
     addInventoryLog: "在庫調整", stockOut: "出庫", stockSet: "棚卸設定", inventoryNote: "メモ", movementType: "種類", inventoryHistory: "在庫履歴", currentStock: "現在在庫", lowStock: "低在庫", inventoryValue: "在庫金額", totalUnits: "総在庫数", beforeStock: "調整前", afterStock: "調整後", operator: "担当者"
   }
@@ -97,6 +97,11 @@ function twdToJpy(amount) { return Number(amount || 0) / rate(); }
 function toJpy(amount, currency) { return currency === "TWD" ? twdToJpy(amount) : Number(amount || 0); }
 function fromJpy(amount, currency) { return currency === "TWD" ? jpyToTwd(amount) : Number(amount || 0); }
 function displayCurrency() { return state.data.settings.displayCurrency || "JPY"; }
+function setDisplayCurrency(currency) {
+  state.data.settings.displayCurrency = currency;
+  saveData();
+  renderAll();
+}
 function money(amount, currency = displayCurrency()) {
   const value = currency === "TWD" ? jpyToTwd(amount) : Number(amount || 0);
   const formatted = value.toLocaleString(undefined, { maximumFractionDigits: currency === "TWD" ? 0 : 2 });
@@ -183,7 +188,7 @@ function renderOrders() {
   document.querySelector("#orderList").innerHTML = state.data.orders.map((order) => `<article class="item-card"><div class="item-top"><strong>${productName(order.productId, order.item)}</strong><span class="${badgeClass(order.status)}">${order.status}</span></div><span class="meta">${text("customer")}: ${order.customer} / ${order.quantity} x ${money(order.unitPrice)} = ${money(order.total)}</span>${actions("orders", order.id)}</article>`).join("") || emptyList();
 }
 function renderProducts() {
-  document.querySelector("#productList").innerHTML = state.data.products.map((product) => `<article class="item-card"><div class="item-top"><strong>${product.name}</strong><span class="pill">${money(product.price)} / ${money(product.price, "TWD")}</span></div><span class="meta">${text("customer")}: ${product.customer} / ${text("stock")}: ${product.stock || 0} / ${product.id}</span>${actions("products", product.id)}</article>`).join("") || emptyList();
+  document.querySelector("#productList").innerHTML = state.data.products.map((product) => `<article class="item-card"><div class="item-top"><strong>${product.name}</strong><span class="pill">${money(product.price)}</span></div><span class="meta">${text("customer")}: ${product.customer} / ${text("stock")}: ${product.stock || 0} / ${product.id}</span>${actions("products", product.id)}</article>`).join("") || emptyList();
 }
 function renderPurchaseItems() {
   document.querySelector("#purchaseList").innerHTML = state.data.purchaseItems.map((item) => `<article class="item-card"><div class="item-top"><strong>${productName(item.productId, item.item)}</strong><span class="${badgeClass(item.stocked ? text("stocked") : item.status)}">${item.stocked ? text("stocked") : item.status}</span></div><span class="meta">${item.supplier || "-"} / ${item.quantity} x ${money(item.unitCost)} + ${text("shippingFee")} ${money(item.shippingCost)} + ${text("transportFee")} ${money(item.transportCost)} = ${money(item.totalCost)}</span><div class="item-actions">${!item.stocked ? `<button class="secondary-button" type="button" data-stock-in="${item.id}">${text("stockIn")}</button>` : ""}<button class="secondary-button" type="button" data-edit="purchaseItems" data-id="${item.id}">${text("edit")}</button><button class="danger-button" type="button" data-delete="purchaseItems" data-id="${item.id}">${text("delete")}</button></div></article>`).join("") || emptyList();
@@ -221,11 +226,16 @@ function renderAccounting() {
   document.querySelector("#koseiAdvance").textContent = money(totals.kosei);
   document.querySelector("#choAdvance").textContent = money(totals.cho);
   document.querySelector("#advanceTotal").textContent = money(total);
-  document.querySelector("#advanceTwd").textContent = money(total, "TWD");
+  document.querySelector("#advanceTwd").textContent = money(total);
   document.querySelector("#paymentList").innerHTML = state.data.payments.map((payment) => {
     const product = state.data.products.find((item) => item.id === payment.productId);
-    return `<article class="item-card"><div class="item-top"><strong>${product ? product.name : payment.productId}</strong><span class="pill">${money(payment.amount)} / ${money(payment.amount, "TWD")}</span></div><span class="meta">${text("paidBy")}: ${payment.payer} / ${product ? product.customer : ""}</span>${actions("payments", payment.id)}</article>`;
+    return `<article class="item-card"><div class="item-top"><strong>${product ? product.name : payment.productId}</strong><span class="pill">${money(payment.amount)}</span></div><span class="meta">${text("paidBy")}: ${payment.payer} / ${product ? product.customer : ""}</span>${actions("payments", payment.id)}</article>`;
   }).join("") || emptyList();
+}
+function renderCurrencyToggle() {
+  document.querySelectorAll("[data-currency-toggle]").forEach((button) => {
+    button.classList.toggle("active", button.dataset.currencyToggle === displayCurrency());
+  });
 }
 function renderSettings() {
   document.querySelector("#exchangeRate").value = state.data.settings.exchangeRate;
@@ -239,7 +249,7 @@ function renderSummary() {
 function renderAll() {
   if (!document.querySelector("#appShell")) return;
   state.data = normalize(state.data);
-  renderProductSelects(); renderOrders(); renderProducts(); renderPurchaseItems(); renderInventory(); renderPackages(); renderShipping(); renderCustomers(); renderAccounting(); renderSettings(); renderSummary();
+  renderProductSelects(); renderOrders(); renderProducts(); renderPurchaseItems(); renderInventory(); renderPackages(); renderShipping(); renderCustomers(); renderAccounting(); renderSettings(); renderSummary(); renderCurrencyToggle();
   updateOrderTotalPreview(); updatePurchaseTotalPreview();
 }
 
@@ -354,6 +364,7 @@ document.querySelector("#loginBtn").addEventListener("click", () => {
 document.querySelector("#logoutBtn").addEventListener("click", () => { state.currentUser = ""; localStorage.removeItem("erpUser"); showLogin(); });
 document.querySelector("#loginLang").addEventListener("change", (event) => setLanguage(event.target.value));
 document.querySelector("#appLang").addEventListener("change", (event) => setLanguage(event.target.value));
+document.querySelectorAll("[data-currency-toggle]").forEach((button) => button.addEventListener("click", () => setDisplayCurrency(button.dataset.currencyToggle)));
 document.querySelectorAll(".tab, .bottom-link").forEach((button) => button.addEventListener("click", () => activateView(button.dataset.view)));
 document.querySelectorAll("[data-open-form]").forEach((button) => button.addEventListener("click", () => { const form = document.querySelector(`#${button.dataset.openForm}`); delete form.dataset.editingId; form.reset(); form.classList.toggle("hidden"); syncOrderPriceFromProduct(); syncPurchaseCostFromProduct(); }));
 document.querySelector("#orderProduct").addEventListener("change", syncOrderPriceFromProduct);

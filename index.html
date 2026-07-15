@@ -34,6 +34,10 @@
       <header class="mobile-header">
         <div><p class="kicker" data-i18n="todayWork">今日工作</p><h1 data-i18n="dashboard">總覽</h1></div>
         <div class="header-actions">
+          <div class="currency-toggle" aria-label="Currency">
+            <button type="button" data-currency-toggle="JPY">JPY</button>
+            <button type="button" data-currency-toggle="TWD">TWD</button>
+          </div>
           <select id="appLang" aria-label="Language"><option value="zh">中文</option><option value="ja">日本語</option></select>
           <button id="logoutBtn" class="ghost-button" type="button" data-i18n="logout">登出</button>
         </div>
@@ -168,7 +172,7 @@
           <div class="advance-box">
             <div><span data-i18n="koseiAdvance">kosei 代墊</span><strong id="koseiAdvance">¥0</strong></div>
             <div><span data-i18n="choAdvance">cho 代墊</span><strong id="choAdvance">¥0</strong></div>
-            <div><span data-i18n="advanceTwd">台幣換算</span><strong id="advanceTwd">NT$0</strong></div>
+            <div><span data-i18n="advanceTwd">目前幣別</span><strong id="advanceTwd">¥0</strong></div>
             <div><span data-i18n="backupStatus">自動備份</span><strong id="backupStatus">ON</strong></div>
           </div>
           <div id="paymentList" class="list"></div>
