@@ -169,6 +169,7 @@
           <div class="section-title"><h2 data-i18n="accounting">對帳</h2><button class="small-button" data-open-form="accountingForm" type="button" data-i18n="addPayment">新增付款</button></div>
           <form id="accountingForm" class="quick-form hidden" data-collection="payments">
             <select id="paymentProduct" data-field="productId"></select>
+            <select data-field="type"><option value="product" data-i18n="productAdvance">商品代墊</option><option value="shipping" data-i18n="shippingAdvance">運費代墊</option></select>
             <select data-field="payer"><option value="kosei">kosei</option><option value="cho">cho</option></select>
             <div class="money-field"><input data-field="amount" inputmode="decimal" data-i18n-placeholder="paidAmount" placeholder="付款金額" /><select data-currency-for="amount"><option value="JPY">JPY</option><option value="TWD">TWD</option></select></div>
             <button class="primary-button" type="submit" data-i18n="save">儲存</button>
@@ -176,6 +177,7 @@
           <div class="advance-box">
             <div><span data-i18n="koseiAdvance">kosei 代墊</span><strong id="koseiAdvance">¥0</strong></div>
             <div><span data-i18n="choAdvance">cho 代墊</span><strong id="choAdvance">¥0</strong></div>
+            <div><span data-i18n="shippingAdvance">運費代墊</span><strong id="shippingAdvance">¥0</strong></div>
             <div><span data-i18n="advanceTwd">目前幣別</span><strong id="advanceTwd">¥0</strong></div>
             <div><span data-i18n="backupStatus">自動備份</span><strong id="backupStatus" data-i18n="dailyBackup">每天</strong></div>
           </div>

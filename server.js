@@ -30,8 +30,8 @@ const defaultData = {
     { id: "C-002", name: "Cho", contact: "LINE: cho", paymentStatus: "已付款" },
   ],
   payments: [
-    { id: "A-001", productId: "P-001", payer: "kosei", amount: 12800 },
-    { id: "A-002", productId: "P-002", payer: "cho", amount: 6800 },
+    { id: "A-001", productId: "P-001", type: "product", payer: "kosei", amount: 12800 },
+    { id: "A-002", productId: "P-002", type: "product", payer: "cho", amount: 6800 },
   ],
 };
 
@@ -91,6 +91,7 @@ function normalizeData(data) {
     afterStock: Number(log.afterStock || 0),
     createdAt: log.createdAt || new Date().toISOString(),
   }));
+  merged.payments = (merged.payments || []).map((payment) => ({ ...payment, type: payment.type || "product", amount: Number(payment.amount || 0) }));
   return merged;
 }
 

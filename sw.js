@@ -1,4 +1,4 @@
-const CACHE_NAME = "jp-erp-v15";
+const CACHE_NAME = "jp-erp-v16";
 const ASSETS = ["./", "./index.html", "./styles.css", "./script.js", "./manifest.webmanifest", "./icon.svg"];
 
 self.addEventListener("install", (event) => {
