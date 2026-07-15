@@ -336,6 +336,13 @@ h2 {
   margin-bottom: 13px;
 }
 
+.title-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
 .compact-title {
   margin-top: 12px;
 }

@@ -167,7 +167,13 @@
         </section>
 
         <section id="accounting" class="view">
-          <div class="section-title"><h2 data-i18n="accounting">對帳</h2><button class="small-button" data-open-form="accountingForm" type="button" data-i18n="addPayment">新增付款</button></div>
+          <div class="section-title">
+            <h2 data-i18n="accounting">對帳</h2>
+            <div class="title-actions">
+              <button class="small-button" data-open-form="accountingForm" type="button" data-i18n="addPayment">新增付款</button>
+              <button class="small-button" data-open-shipping-advance type="button" data-i18n="addShippingAdvance">新增運費代墊費用</button>
+            </div>
+          </div>
           <form id="accountingForm" class="quick-form hidden" data-collection="payments">
             <select id="paymentProduct" data-field="productId"></select>
             <select id="paymentType" data-field="type"><option value="product" data-i18n="productAdvance">商品代墊</option><option value="shipping" data-i18n="shippingAdvance">運費代墊</option></select>
