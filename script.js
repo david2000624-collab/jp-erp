@@ -8,7 +8,7 @@ const translations = {
     addOrder: "新增訂單", addProduct: "新增商品", addPurchase: "新增進貨", addPackage: "新增包裹", addShipment: "新增出貨", addCustomer: "新增客戶", addPayment: "新增付款", addShippingAdvance: "新增運費代墊費用",
     save: "儲存", saveSettings: "儲存設定", edit: "修改", delete: "刪除", customerName: "客戶姓名", itemName: "商品名稱", price: "商品金額", salePrice: "售價", averageUnitPrice: "平均單價", paidAmount: "付款金額", paymentNote: "備註", productImage: "商品圖片", selectProduct: "選擇既有商品",
     quantity: "數量", unitPrice: "單價", unitCost: "進貨單價", shippingCost: "運費", transportCost: "交通費", supplier: "供應商 / 店家", stock: "庫存", orderTotal: "訂單總額", purchaseTotal: "進貨總成本",
-    koseiAdvance: "kosei 代墊", choAdvance: "cho 代墊", advanceTwd: "目前幣別", productAdvance: "商品代墊", shippingAdvance: "運費代墊", backupStatus: "自動備份", dailyBackup: "每天", exchangeRate: "日幣換台幣匯率", displayCurrency: "顯示幣別",
+    koseiAdvance: "kosei 代墊", choAdvance: "cho 代墊", advanceTwd: "目前幣別", productAdvance: "商品代墊", shippingAdvance: "運費代墊", backupStatus: "自動備份", dailyBackup: "每天", exchangeRate: "日幣換台幣匯率", displayCurrency: "顯示幣別", exportData: "匯出資料", importData: "匯入資料",
     loginFailed: "帳號或密碼錯誤", noData: "目前沒有資料", paidBy: "付款人", customer: "客戶", method: "方式", contact: "聯絡方式", confirmDelete: "確定要刪除這筆資料嗎？", shippingFee: "運費", transportFee: "交通費", stockIn: "入庫存", stocked: "已入庫存",
     addInventoryLog: "調整庫存", stockOut: "出庫", stockSet: "盤點設定", inventoryNote: "備註", movementType: "類型", inventoryHistory: "庫存紀錄", currentStock: "目前庫存", lowStock: "低庫存", inventoryValue: "庫存價值", salesValue: "可售金額", totalUnits: "總庫存數", beforeStock: "調整前", afterStock: "調整後", operator: "操作人"
   },
@@ -19,7 +19,7 @@ const translations = {
     addOrder: "注文追加", addProduct: "商品追加", addPurchase: "仕入追加", addPackage: "荷物追加", addShipment: "出荷追加", addCustomer: "顧客追加", addPayment: "支払い追加", addShippingAdvance: "送料立替費用を追加",
     save: "保存", saveSettings: "設定保存", edit: "編集", delete: "削除", customerName: "顧客名", itemName: "商品名", price: "商品金額", salePrice: "販売価格", averageUnitPrice: "平均単価", paidAmount: "支払金額", paymentNote: "メモ", productImage: "商品画像", selectProduct: "既存商品を選択",
     quantity: "数量", unitPrice: "単価", unitCost: "仕入単価", shippingCost: "送料", transportCost: "交通費", supplier: "仕入先 / 店舗", stock: "在庫", orderTotal: "注文合計", purchaseTotal: "仕入合計",
-    koseiAdvance: "kosei 立替", choAdvance: "cho 立替", advanceTwd: "現在通貨", productAdvance: "商品立替", shippingAdvance: "送料立替", backupStatus: "自動バックアップ", dailyBackup: "毎日", exchangeRate: "JPYからTWDのレート", displayCurrency: "表示通貨",
+    koseiAdvance: "kosei 立替", choAdvance: "cho 立替", advanceTwd: "現在通貨", productAdvance: "商品立替", shippingAdvance: "送料立替", backupStatus: "自動バックアップ", dailyBackup: "毎日", exchangeRate: "JPYからTWDのレート", displayCurrency: "表示通貨", exportData: "データを書き出す", importData: "データを読み込む",
     loginFailed: "アカウントまたはパスワードが違います", noData: "データがありません", paidBy: "支払者", customer: "顧客", method: "方法", contact: "連絡先", confirmDelete: "このデータを削除しますか？", shippingFee: "送料", transportFee: "交通費", stockIn: "在庫入庫", stocked: "入庫済み",
     addInventoryLog: "在庫調整", stockOut: "出庫", stockSet: "棚卸設定", inventoryNote: "メモ", movementType: "種類", inventoryHistory: "在庫履歴", currentStock: "現在在庫", lowStock: "低在庫", inventoryValue: "在庫金額", salesValue: "販売予定額", totalUnits: "総在庫数", beforeStock: "調整前", afterStock: "調整後", operator: "担当者"
   }
@@ -187,6 +187,34 @@ async function saveData() {
   localStorage.setItem("erpData", JSON.stringify(state.data));
   if (!hasServer) return;
   try { await fetch("./api/data", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(state.data) }); } catch {}
+}
+
+function exportData() {
+  const blob = new Blob([JSON.stringify(normalize(state.data), null, 2)], { type: "application/json" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = `jp-erp-data-${new Date().toISOString().slice(0, 10)}.json`;
+  link.click();
+  URL.revokeObjectURL(link.href);
+}
+
+function importData(event) {
+  const file = event.target.files?.[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = async () => {
+    try {
+      state.data = normalize(JSON.parse(reader.result));
+      await saveData();
+      renderAll();
+      alert(text("save"));
+    } catch {
+      alert(text("noData"));
+    } finally {
+      event.target.value = "";
+    }
+  };
+  reader.readAsText(file, "utf-8");
 }
 
 function applyLanguage() {
@@ -488,6 +516,8 @@ document.querySelector("#settingsForm").addEventListener("submit", (event) => {
   state.data.settings.displayCurrency = document.querySelector("#displayCurrency").value;
   saveData(); renderAll();
 });
+document.querySelector("#exportDataBtn").addEventListener("click", exportData);
+document.querySelector("#importDataFile").addEventListener("change", importData);
 document.addEventListener("click", (event) => {
   const editButton = event.target.closest("[data-edit]");
   const deleteButton = event.target.closest("[data-delete]");
