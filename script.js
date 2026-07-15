@@ -6,7 +6,7 @@ const translations = {
     todayWork: "今日工作", dashboard: "總覽", pendingOrders: "待處理訂單", warehouseItems: "倉庫包裹", unpaidCustomers: "未付款客戶", advanceTotal: "代墊總額",
     orders: "訂單", products: "商品", purchaseItems: "進貨項目", inventory: "庫存", packages: "包裹", shipping: "出貨", customers: "客戶", accounting: "對帳", settings: "設定",
     addOrder: "新增訂單", addProduct: "新增商品", addPurchase: "新增進貨", addPackage: "新增包裹", addShipment: "新增出貨", addCustomer: "新增客戶", addPayment: "新增付款",
-    save: "儲存", saveSettings: "儲存設定", edit: "修改", delete: "刪除", customerName: "客戶姓名", itemName: "商品名稱", price: "商品金額", salePrice: "售價", paidAmount: "付款金額", productImage: "商品圖片", selectProduct: "選擇既有商品",
+    save: "儲存", saveSettings: "儲存設定", edit: "修改", delete: "刪除", customerName: "客戶姓名", itemName: "商品名稱", price: "商品金額", salePrice: "售價", paidAmount: "付款金額", paymentNote: "備註", productImage: "商品圖片", selectProduct: "選擇既有商品",
     quantity: "數量", unitPrice: "單價", unitCost: "進貨單價", shippingCost: "運費", transportCost: "交通費", supplier: "供應商 / 店家", stock: "庫存", orderTotal: "訂單總額", purchaseTotal: "進貨總成本",
     koseiAdvance: "kosei 代墊", choAdvance: "cho 代墊", advanceTwd: "目前幣別", productAdvance: "商品代墊", shippingAdvance: "運費代墊", backupStatus: "自動備份", dailyBackup: "每天", exchangeRate: "日幣換台幣匯率", displayCurrency: "顯示幣別",
     loginFailed: "帳號或密碼錯誤", noData: "目前沒有資料", paidBy: "付款人", customer: "客戶", method: "方式", contact: "聯絡方式", confirmDelete: "確定要刪除這筆資料嗎？", shippingFee: "運費", transportFee: "交通費", stockIn: "入庫存", stocked: "已入庫存",
@@ -17,7 +17,7 @@ const translations = {
     todayWork: "本日の業務", dashboard: "概要", pendingOrders: "未処理注文", warehouseItems: "倉庫荷物", unpaidCustomers: "未払い顧客", advanceTotal: "立替合計",
     orders: "注文", products: "商品", purchaseItems: "仕入項目", inventory: "在庫", packages: "荷物", shipping: "出荷", customers: "顧客", accounting: "精算", settings: "設定",
     addOrder: "注文追加", addProduct: "商品追加", addPurchase: "仕入追加", addPackage: "荷物追加", addShipment: "出荷追加", addCustomer: "顧客追加", addPayment: "支払い追加",
-    save: "保存", saveSettings: "設定保存", edit: "編集", delete: "削除", customerName: "顧客名", itemName: "商品名", price: "商品金額", salePrice: "販売価格", paidAmount: "支払金額", productImage: "商品画像", selectProduct: "既存商品を選択",
+    save: "保存", saveSettings: "設定保存", edit: "編集", delete: "削除", customerName: "顧客名", itemName: "商品名", price: "商品金額", salePrice: "販売価格", paidAmount: "支払金額", paymentNote: "メモ", productImage: "商品画像", selectProduct: "既存商品を選択",
     quantity: "数量", unitPrice: "単価", unitCost: "仕入単価", shippingCost: "送料", transportCost: "交通費", supplier: "仕入先 / 店舗", stock: "在庫", orderTotal: "注文合計", purchaseTotal: "仕入合計",
     koseiAdvance: "kosei 立替", choAdvance: "cho 立替", advanceTwd: "現在通貨", productAdvance: "商品立替", shippingAdvance: "送料立替", backupStatus: "自動バックアップ", dailyBackup: "毎日", exchangeRate: "JPYからTWDのレート", displayCurrency: "表示通貨",
     loginFailed: "アカウントまたはパスワードが違います", noData: "データがありません", paidBy: "支払者", customer: "顧客", method: "方法", contact: "連絡先", confirmDelete: "このデータを削除しますか？", shippingFee: "送料", transportFee: "交通費", stockIn: "在庫入庫", stocked: "入庫済み",
@@ -32,8 +32,8 @@ const defaultData = {
     { id: "O-002", customer: "Cho", productId: "P-002", item: "限定周邊", quantity: 2, unitPrice: 6800, total: 13600, status: "已採購" }
   ],
   products: [
-    { id: "P-001", name: "藥妝補貨", customer: "林小姐", price: 12800, salePrice: 12800, stock: 0, image: "" },
-    { id: "P-002", name: "限定周邊", customer: "Cho", price: 6800, salePrice: 6800, stock: 0, image: "" }
+    { id: "P-001", name: "藥妝補貨", customer: "林小姐", price: 12800, shippingCost: 0, salePrice: 12800, stock: 0, image: "" },
+    { id: "P-002", name: "限定周邊", customer: "Cho", price: 6800, shippingCost: 0, salePrice: 6800, stock: 0, image: "" }
   ],
   purchaseItems: [
     { id: "I-001", productId: "P-001", item: "藥妝補貨", supplier: "大阪藥妝店", quantity: 1, unitCost: 11800, shippingCost: 500, transportCost: 0, totalCost: 12300, status: "待採購", stocked: false }
@@ -42,12 +42,12 @@ const defaultData = {
   packages: [{ id: "B-001", no: "JP-WH-001", customer: "林小姐", status: "日本倉入庫" }],
   shipping: [{ id: "S-001", customer: "林小姐", method: "空運", status: "待出貨" }],
   customers: [{ id: "C-001", name: "林小姐", contact: "LINE: lin.jp", paymentStatus: "未付款" }, { id: "C-002", name: "Cho", contact: "LINE: cho", paymentStatus: "已付款" }],
-  payments: [{ id: "A-001", productId: "P-001", type: "product", payer: "kosei", amount: 12800 }, { id: "A-002", productId: "P-002", type: "product", payer: "cho", amount: 6800 }]
+  payments: [{ id: "A-001", productId: "P-001", type: "product", payer: "kosei", note: "", amount: 12800 }, { id: "A-002", productId: "P-002", type: "product", payer: "cho", note: "", amount: 6800 }]
 };
 
 const config = {
   orders: { prefix: "O", formId: "orderForm", numeric: ["quantity"], money: ["unitPrice"] },
-  products: { prefix: "P", formId: "productForm", numeric: ["stock"], money: ["price", "salePrice"] },
+  products: { prefix: "P", formId: "productForm", numeric: ["stock"], money: ["price", "shippingCost", "salePrice"] },
   purchaseItems: { prefix: "I", formId: "purchaseForm", numeric: ["quantity"], money: ["unitCost", "shippingCost", "transportCost"] },
   inventoryLogs: { prefix: "M", formId: "inventoryForm", numeric: ["quantity"] },
   packages: { prefix: "B", formId: "packageForm" },
@@ -65,7 +65,7 @@ function normalize(data) {
   const merged = { ...clone(defaultData), ...data, settings: { ...defaultData.settings, ...(data.settings || {}) } };
   merged.purchaseItems = merged.purchaseItems || [];
   merged.inventoryLogs = merged.inventoryLogs || [];
-  merged.products = (merged.products || []).map((product) => ({ ...product, price: Number(product.price || 0), salePrice: Number(product.salePrice || product.price || 0), stock: Number(product.stock || 0), image: product.image || "" }));
+  merged.products = (merged.products || []).map((product) => ({ ...product, price: Number(product.price || 0), shippingCost: Number(product.shippingCost || 0), salePrice: Number(product.salePrice || product.price || 0), stock: Number(product.stock || 0), image: product.image || "" }));
   merged.customers = (merged.customers || []).map((customer) => ({ ...customer, paymentStatus: customer.paymentStatus || "未付款" }));
   merged.orders = (merged.orders || []).map((order) => {
     const product = (merged.products || []).find((item) => item.id === order.productId || item.name === order.item);
@@ -88,7 +88,7 @@ function normalize(data) {
     afterStock: Number(log.afterStock || 0),
     createdAt: log.createdAt || new Date().toISOString()
   }));
-  merged.payments = (merged.payments || []).map((payment) => ({ ...payment, type: payment.type || "product", amount: Number(payment.amount || 0) }));
+  merged.payments = (merged.payments || []).map((payment) => ({ ...payment, productId: payment.type === "shipping" ? "" : payment.productId || "", type: payment.type || "product", note: payment.note || "", amount: Number(payment.amount || 0) }));
   return merged;
 }
 function text(key) { return translations[state.lang][key] || translations.zh[key] || key; }
@@ -115,6 +115,10 @@ function moneyInputValue(jpyValue, currency) { const value = fromJpy(jpyValue, c
 function shortDate(value) { return value ? new Date(value).toLocaleString(state.lang === "ja" ? "ja-JP" : "zh-TW", { month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" }) : ""; }
 function inventoryTypeLabel(type) { return type === "out" ? text("stockOut") : type === "set" ? text("stockSet") : text("stockIn"); }
 function paymentTypeLabel(type) { return type === "shipping" ? text("shippingAdvance") : text("productAdvance"); }
+function paymentTitle(payment) {
+  if (payment.type === "shipping") return payment.note || text("shippingAdvance");
+  return productName(payment.productId, payment.note || payment.productId);
+}
 function productImageMarkup(product) {
   return product.image ? `<img class="product-image" src="${product.image}" alt="${product.name}" />` : `<div class="product-image placeholder">JP</div>`;
 }
@@ -224,7 +228,7 @@ function renderOrders() {
   document.querySelector("#orderList").innerHTML = state.data.orders.map((order) => `<article class="item-card"><div class="item-top"><strong>${productName(order.productId, order.item)}</strong><span class="${badgeClass(order.status)}">${order.status}</span></div><span class="meta">${text("customer")}: ${order.customer} / ${order.quantity} x ${money(order.unitPrice)} = ${money(order.total)}</span>${actions("orders", order.id)}</article>`).join("") || emptyList();
 }
 function renderProducts() {
-  document.querySelector("#productList").innerHTML = state.data.products.map((product) => `<article class="item-card product-card">${productImageMarkup(product)}<div><div class="item-top"><strong>${product.name}</strong><span class="pill">${text("salePrice")}: ${money(product.salePrice || product.price)}</span></div><span class="meta">${text("price")}: ${money(product.price)} / ${text("customer")}: ${product.customer || "-"} / ${text("stock")}: ${product.stock || 0} / ${product.id}</span></div>${actions("products", product.id)}</article>`).join("") || emptyList();
+  document.querySelector("#productList").innerHTML = state.data.products.map((product) => `<article class="item-card product-card">${productImageMarkup(product)}<div><div class="item-top"><strong>${product.name}</strong><span class="pill">${text("salePrice")}: ${money(product.salePrice || product.price)}</span></div><span class="meta">${text("price")}: ${money(product.price)} / ${text("shippingFee")}: ${money(product.shippingCost)} / ${text("customer")}: ${product.customer || "-"} / ${text("stock")}: ${product.stock || 0} / ${product.id}</span></div>${actions("products", product.id)}</article>`).join("") || emptyList();
 }
 function renderPurchaseItems() {
   document.querySelector("#purchaseList").innerHTML = state.data.purchaseItems.map((item) => `<article class="item-card"><div class="item-top"><strong>${productName(item.productId, item.item)}</strong><span class="${badgeClass(item.stocked ? text("stocked") : item.status)}">${item.stocked ? text("stocked") : item.status}</span></div><span class="meta">${item.supplier || "-"} / ${item.quantity} x ${money(item.unitCost)} + ${text("shippingFee")} ${money(item.shippingCost)} + ${text("transportFee")} ${money(item.transportCost)} = ${money(item.totalCost)}</span><div class="item-actions">${!item.stocked ? `<button class="secondary-button" type="button" data-stock-in="${item.id}">${text("stockIn")}</button>` : ""}<button class="secondary-button" type="button" data-edit="purchaseItems" data-id="${item.id}">${text("edit")}</button><button class="danger-button" type="button" data-delete="purchaseItems" data-id="${item.id}">${text("delete")}</button></div></article>`).join("") || emptyList();
@@ -268,7 +272,8 @@ function renderAccounting() {
   document.querySelector("#advanceTwd").textContent = money(total);
   document.querySelector("#paymentList").innerHTML = state.data.payments.map((payment) => {
     const product = state.data.products.find((item) => item.id === payment.productId);
-    return `<article class="item-card"><div class="item-top"><strong>${paymentTypeLabel(payment.type)} - ${product ? product.name : payment.productId}</strong><span class="pill">${money(payment.amount)}</span></div><span class="meta">${text("paidBy")}: ${payment.payer} / ${product ? product.customer : ""}</span>${actions("payments", payment.id)}</article>`;
+    const customer = payment.type === "shipping" ? payment.note || "-" : product ? product.customer : "";
+    return `<article class="item-card"><div class="item-top"><strong>${paymentTypeLabel(payment.type)} - ${paymentTitle(payment)}</strong><span class="pill">${money(payment.amount)}</span></div><span class="meta">${text("paidBy")}: ${payment.payer} / ${customer}</span>${actions("payments", payment.id)}</article>`;
   }).join("") || emptyList();
 }
 function renderCurrencyToggle() {
@@ -313,6 +318,10 @@ function formValues(form, collection) {
     values.productId = product?.id || "";
     values.totalCost = Number(values.quantity || 0) * Number(values.unitCost || 0) + Number(values.shippingCost || 0) + Number(values.transportCost || 0);
   }
+  if (collection === "payments" && values.type === "shipping") {
+    values.productId = "";
+    values.note = values.note || text("shippingAdvance");
+  }
   return values;
 }
 function fillForm(collection, id) {
@@ -328,6 +337,7 @@ function fillForm(collection, id) {
   });
   const fileInput = form.querySelector('input[type="file"]');
   if (fileInput) fileInput.value = "";
+  syncPaymentType();
   updateOrderTotalPreview(); updatePurchaseTotalPreview();
   form.scrollIntoView({ behavior: "smooth", block: "center" });
 }
@@ -382,12 +392,21 @@ function submitInventoryForm(event) {
   renderAll();
 }
 
+function syncPaymentType() {
+  const type = document.querySelector("#paymentType").value;
+  const productSelect = document.querySelector("#paymentProduct");
+  const noteInput = document.querySelector("#paymentNote");
+  productSelect.disabled = type === "shipping";
+  productSelect.classList.toggle("hidden", type === "shipping");
+  if (type === "shipping" && !noteInput.value) noteInput.value = text("shippingAdvance");
+}
+
 function stockInPurchaseItem(id) {
   const item = state.data.purchaseItems.find((entry) => entry.id === id);
   if (!item || item.stocked) return;
   let product = state.data.products.find((entry) => entry.id === item.productId);
   if (!product) {
-    product = { id: nextId("P", state.data.products), name: item.item || "新商品", customer: "", price: item.unitCost || 0, salePrice: item.unitCost || 0, stock: 0, image: "" };
+    product = { id: nextId("P", state.data.products), name: item.item || "新商品", customer: "", price: item.unitCost || 0, shippingCost: item.shippingCost || 0, salePrice: item.unitCost || 0, stock: 0, image: "" };
     item.productId = product.id;
     state.data.products.unshift(product);
   }
@@ -418,6 +437,7 @@ document.querySelector("#purchaseQuantity").addEventListener("input", updatePurc
 document.querySelector("#purchaseUnitCost").addEventListener("input", updatePurchaseTotalPreview);
 document.querySelector("#purchaseShippingCost").addEventListener("input", updatePurchaseTotalPreview);
 document.querySelector("#purchaseTransportCost").addEventListener("input", updatePurchaseTotalPreview);
+document.querySelector("#paymentType").addEventListener("change", syncPaymentType);
 document.querySelector("#productImageFile").addEventListener("change", handleProductImageUpload);
 document.querySelectorAll("[data-currency-for]").forEach((select) => select.addEventListener("change", () => { updateOrderTotalPreview(); updatePurchaseTotalPreview(); }));
 document.querySelector("#orderForm").addEventListener("submit", (event) => upsertFromForm(event, "orders"));
@@ -444,4 +464,5 @@ document.addEventListener("click", (event) => {
 });
 if ("serviceWorker" in navigator && hasServer) navigator.serviceWorker.register("sw.js");
 applyLanguage();
+syncPaymentType();
 if (state.currentUser) showApp(); else showLogin();

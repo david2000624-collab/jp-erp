@@ -84,6 +84,7 @@
             <input data-field="name" data-i18n-placeholder="itemName" placeholder="商品名稱" />
             <input data-field="customer" data-i18n-placeholder="customerName" placeholder="客戶姓名" />
             <div class="money-field"><input data-field="price" inputmode="decimal" data-i18n-placeholder="price" placeholder="商品金額" /><select data-currency-for="price"><option value="JPY">JPY</option><option value="TWD">TWD</option></select></div>
+            <div class="money-field"><input data-field="shippingCost" inputmode="decimal" data-i18n-placeholder="shippingCost" placeholder="運費" /><select data-currency-for="shippingCost"><option value="JPY">JPY</option><option value="TWD">TWD</option></select></div>
             <div class="money-field"><input data-field="salePrice" inputmode="decimal" data-i18n-placeholder="salePrice" placeholder="售價" /><select data-currency-for="salePrice"><option value="JPY">JPY</option><option value="TWD">TWD</option></select></div>
             <input data-field="stock" inputmode="numeric" data-i18n-placeholder="stock" placeholder="庫存" />
             <label class="file-field"><span data-i18n="productImage">商品圖片</span><input id="productImageFile" type="file" accept="image/*" /></label>
@@ -169,8 +170,9 @@
           <div class="section-title"><h2 data-i18n="accounting">對帳</h2><button class="small-button" data-open-form="accountingForm" type="button" data-i18n="addPayment">新增付款</button></div>
           <form id="accountingForm" class="quick-form hidden" data-collection="payments">
             <select id="paymentProduct" data-field="productId"></select>
-            <select data-field="type"><option value="product" data-i18n="productAdvance">商品代墊</option><option value="shipping" data-i18n="shippingAdvance">運費代墊</option></select>
+            <select id="paymentType" data-field="type"><option value="product" data-i18n="productAdvance">商品代墊</option><option value="shipping" data-i18n="shippingAdvance">運費代墊</option></select>
             <select data-field="payer"><option value="kosei">kosei</option><option value="cho">cho</option></select>
+            <input id="paymentNote" data-field="note" data-i18n-placeholder="paymentNote" placeholder="備註" />
             <div class="money-field"><input data-field="amount" inputmode="decimal" data-i18n-placeholder="paidAmount" placeholder="付款金額" /><select data-currency-for="amount"><option value="JPY">JPY</option><option value="TWD">TWD</option></select></div>
             <button class="primary-button" type="submit" data-i18n="save">儲存</button>
           </form>
