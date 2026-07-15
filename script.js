@@ -6,22 +6,22 @@ const translations = {
     todayWork: "今日工作", dashboard: "總覽", pendingOrders: "待處理訂單", warehouseItems: "倉庫包裹", unpaidCustomers: "未付款客戶", advanceTotal: "代墊總額",
     orders: "訂單", products: "商品", purchaseItems: "進貨項目", inventory: "庫存", packages: "包裹", shipping: "出貨", customers: "客戶", accounting: "對帳", settings: "設定",
     addOrder: "新增訂單", addProduct: "新增商品", addPurchase: "新增進貨", addPackage: "新增包裹", addShipment: "新增出貨", addCustomer: "新增客戶", addPayment: "新增付款",
-    save: "儲存", saveSettings: "儲存設定", edit: "修改", delete: "刪除", customerName: "客戶姓名", itemName: "商品名稱", price: "商品金額", paidAmount: "付款金額", productImage: "商品圖片", selectProduct: "選擇既有商品",
+    save: "儲存", saveSettings: "儲存設定", edit: "修改", delete: "刪除", customerName: "客戶姓名", itemName: "商品名稱", price: "商品金額", salePrice: "售價", paidAmount: "付款金額", productImage: "商品圖片", selectProduct: "選擇既有商品",
     quantity: "數量", unitPrice: "單價", unitCost: "進貨單價", shippingCost: "運費", transportCost: "交通費", supplier: "供應商 / 店家", stock: "庫存", orderTotal: "訂單總額", purchaseTotal: "進貨總成本",
     koseiAdvance: "kosei 代墊", choAdvance: "cho 代墊", advanceTwd: "目前幣別", backupStatus: "自動備份", exchangeRate: "日幣換台幣匯率", displayCurrency: "顯示幣別",
     loginFailed: "帳號或密碼錯誤", noData: "目前沒有資料", paidBy: "付款人", customer: "客戶", method: "方式", contact: "聯絡方式", confirmDelete: "確定要刪除這筆資料嗎？", shippingFee: "運費", transportFee: "交通費", stockIn: "入庫存", stocked: "已入庫存",
-    addInventoryLog: "調整庫存", stockOut: "出庫", stockSet: "盤點設定", inventoryNote: "備註", movementType: "類型", inventoryHistory: "庫存紀錄", currentStock: "目前庫存", lowStock: "低庫存", inventoryValue: "庫存價值", totalUnits: "總庫存數", beforeStock: "調整前", afterStock: "調整後", operator: "操作人"
+    addInventoryLog: "調整庫存", stockOut: "出庫", stockSet: "盤點設定", inventoryNote: "備註", movementType: "類型", inventoryHistory: "庫存紀錄", currentStock: "目前庫存", lowStock: "低庫存", inventoryValue: "庫存價值", salesValue: "可售金額", totalUnits: "總庫存數", beforeStock: "調整前", afterStock: "調整後", operator: "操作人"
   },
   ja: {
     appSubtitle: "日本購入代行バックオフィス", loginTitle: "購入代行 ERP", language: "言語", account: "アカウント", password: "パスワード", login: "ログイン", logout: "ログアウト",
     todayWork: "本日の業務", dashboard: "概要", pendingOrders: "未処理注文", warehouseItems: "倉庫荷物", unpaidCustomers: "未払い顧客", advanceTotal: "立替合計",
     orders: "注文", products: "商品", purchaseItems: "仕入項目", inventory: "在庫", packages: "荷物", shipping: "出荷", customers: "顧客", accounting: "精算", settings: "設定",
     addOrder: "注文追加", addProduct: "商品追加", addPurchase: "仕入追加", addPackage: "荷物追加", addShipment: "出荷追加", addCustomer: "顧客追加", addPayment: "支払い追加",
-    save: "保存", saveSettings: "設定保存", edit: "編集", delete: "削除", customerName: "顧客名", itemName: "商品名", price: "商品金額", paidAmount: "支払金額", productImage: "商品画像", selectProduct: "既存商品を選択",
+    save: "保存", saveSettings: "設定保存", edit: "編集", delete: "削除", customerName: "顧客名", itemName: "商品名", price: "商品金額", salePrice: "販売価格", paidAmount: "支払金額", productImage: "商品画像", selectProduct: "既存商品を選択",
     quantity: "数量", unitPrice: "単価", unitCost: "仕入単価", shippingCost: "送料", transportCost: "交通費", supplier: "仕入先 / 店舗", stock: "在庫", orderTotal: "注文合計", purchaseTotal: "仕入合計",
     koseiAdvance: "kosei 立替", choAdvance: "cho 立替", advanceTwd: "現在通貨", backupStatus: "自動バックアップ", exchangeRate: "JPYからTWDのレート", displayCurrency: "表示通貨",
     loginFailed: "アカウントまたはパスワードが違います", noData: "データがありません", paidBy: "支払者", customer: "顧客", method: "方法", contact: "連絡先", confirmDelete: "このデータを削除しますか？", shippingFee: "送料", transportFee: "交通費", stockIn: "在庫入庫", stocked: "入庫済み",
-    addInventoryLog: "在庫調整", stockOut: "出庫", stockSet: "棚卸設定", inventoryNote: "メモ", movementType: "種類", inventoryHistory: "在庫履歴", currentStock: "現在在庫", lowStock: "低在庫", inventoryValue: "在庫金額", totalUnits: "総在庫数", beforeStock: "調整前", afterStock: "調整後", operator: "担当者"
+    addInventoryLog: "在庫調整", stockOut: "出庫", stockSet: "棚卸設定", inventoryNote: "メモ", movementType: "種類", inventoryHistory: "在庫履歴", currentStock: "現在在庫", lowStock: "低在庫", inventoryValue: "在庫金額", salesValue: "販売予定額", totalUnits: "総在庫数", beforeStock: "調整前", afterStock: "調整後", operator: "担当者"
   }
 };
 
@@ -32,8 +32,8 @@ const defaultData = {
     { id: "O-002", customer: "Cho", productId: "P-002", item: "限定周邊", quantity: 2, unitPrice: 6800, total: 13600, status: "已採購" }
   ],
   products: [
-    { id: "P-001", name: "藥妝補貨", customer: "林小姐", price: 12800, stock: 0, image: "" },
-    { id: "P-002", name: "限定周邊", customer: "Cho", price: 6800, stock: 0, image: "" }
+    { id: "P-001", name: "藥妝補貨", customer: "林小姐", price: 12800, salePrice: 12800, stock: 0, image: "" },
+    { id: "P-002", name: "限定周邊", customer: "Cho", price: 6800, salePrice: 6800, stock: 0, image: "" }
   ],
   purchaseItems: [
     { id: "I-001", productId: "P-001", item: "藥妝補貨", supplier: "大阪藥妝店", quantity: 1, unitCost: 11800, shippingCost: 500, transportCost: 0, totalCost: 12300, status: "待採購", stocked: false }
@@ -47,7 +47,7 @@ const defaultData = {
 
 const config = {
   orders: { prefix: "O", formId: "orderForm", numeric: ["quantity"], money: ["unitPrice"] },
-  products: { prefix: "P", formId: "productForm", numeric: ["stock"], money: ["price"] },
+  products: { prefix: "P", formId: "productForm", numeric: ["stock"], money: ["price", "salePrice"] },
   purchaseItems: { prefix: "I", formId: "purchaseForm", numeric: ["quantity"], money: ["unitCost", "shippingCost", "transportCost"] },
   inventoryLogs: { prefix: "M", formId: "inventoryForm", numeric: ["quantity"] },
   packages: { prefix: "B", formId: "packageForm" },
@@ -65,7 +65,7 @@ function normalize(data) {
   const merged = { ...clone(defaultData), ...data, settings: { ...defaultData.settings, ...(data.settings || {}) } };
   merged.purchaseItems = merged.purchaseItems || [];
   merged.inventoryLogs = merged.inventoryLogs || [];
-  merged.products = (merged.products || []).map((product) => ({ ...product, stock: Number(product.stock || 0), image: product.image || "" }));
+  merged.products = (merged.products || []).map((product) => ({ ...product, price: Number(product.price || 0), salePrice: Number(product.salePrice || product.price || 0), stock: Number(product.stock || 0), image: product.image || "" }));
   merged.customers = (merged.customers || []).map((customer) => ({ ...customer, paymentStatus: customer.paymentStatus || "未付款" }));
   merged.orders = (merged.orders || []).map((order) => {
     const product = (merged.products || []).find((item) => item.id === order.productId || item.name === order.item);
@@ -184,11 +184,11 @@ function emptyList() { return `<div class="item-card"><span class="meta">${text(
 function actions(collection, id) { return `<div class="item-actions"><button class="secondary-button" type="button" data-edit="${collection}" data-id="${id}">${text("edit")}</button><button class="danger-button" type="button" data-delete="${collection}" data-id="${id}">${text("delete")}</button></div>`; }
 
 function renderProductSelects() {
-  const orderOptions = state.data.products.map((product) => `<option value="${product.id}">${product.name} / ${money(product.price)}</option>`).join("");
+  const orderOptions = state.data.products.map((product) => `<option value="${product.id}">${product.name} / ${money(product.salePrice || product.price)}</option>`).join("");
   document.querySelector("#orderProduct").innerHTML = orderOptions || `<option value="">${text("noData")}</option>`;
   document.querySelector("#purchaseProduct").innerHTML = `<option value="">${text("selectProduct")}</option>${orderOptions}`;
   document.querySelector("#inventoryProduct").innerHTML = orderOptions || `<option value="">${text("noData")}</option>`;
-  document.querySelector("#paymentProduct").innerHTML = state.data.products.map((product) => `<option value="${product.id}">${product.name} / ${product.customer} / ${money(product.price)}</option>`).join("");
+  document.querySelector("#paymentProduct").innerHTML = state.data.products.map((product) => `<option value="${product.id}">${product.name} / ${product.customer} / ${money(product.salePrice || product.price)}</option>`).join("");
 }
 function updateOrderTotalPreview() {
   const currency = currencySelect(document.querySelector("#orderForm"), "unitPrice").value;
@@ -205,7 +205,7 @@ function updatePurchaseTotalPreview() {
 function syncOrderPriceFromProduct() {
   const product = state.data.products.find((item) => item.id === document.querySelector("#orderProduct").value);
   const currency = currencySelect(document.querySelector("#orderForm"), "unitPrice").value;
-  if (product) document.querySelector("#orderUnitPrice").value = moneyInputValue(product.price || 0, currency);
+  if (product) document.querySelector("#orderUnitPrice").value = moneyInputValue(product.salePrice || product.price || 0, currency);
   updateOrderTotalPreview();
 }
 function syncPurchaseCostFromProduct() {
@@ -222,7 +222,7 @@ function renderOrders() {
   document.querySelector("#orderList").innerHTML = state.data.orders.map((order) => `<article class="item-card"><div class="item-top"><strong>${productName(order.productId, order.item)}</strong><span class="${badgeClass(order.status)}">${order.status}</span></div><span class="meta">${text("customer")}: ${order.customer} / ${order.quantity} x ${money(order.unitPrice)} = ${money(order.total)}</span>${actions("orders", order.id)}</article>`).join("") || emptyList();
 }
 function renderProducts() {
-  document.querySelector("#productList").innerHTML = state.data.products.map((product) => `<article class="item-card product-card">${productImageMarkup(product)}<div><div class="item-top"><strong>${product.name}</strong><span class="pill">${money(product.price)}</span></div><span class="meta">${text("customer")}: ${product.customer || "-"} / ${text("stock")}: ${product.stock || 0} / ${product.id}</span></div>${actions("products", product.id)}</article>`).join("") || emptyList();
+  document.querySelector("#productList").innerHTML = state.data.products.map((product) => `<article class="item-card product-card">${productImageMarkup(product)}<div><div class="item-top"><strong>${product.name}</strong><span class="pill">${text("salePrice")}: ${money(product.salePrice || product.price)}</span></div><span class="meta">${text("price")}: ${money(product.price)} / ${text("customer")}: ${product.customer || "-"} / ${text("stock")}: ${product.stock || 0} / ${product.id}</span></div>${actions("products", product.id)}</article>`).join("") || emptyList();
 }
 function renderPurchaseItems() {
   document.querySelector("#purchaseList").innerHTML = state.data.purchaseItems.map((item) => `<article class="item-card"><div class="item-top"><strong>${productName(item.productId, item.item)}</strong><span class="${badgeClass(item.stocked ? text("stocked") : item.status)}">${item.stocked ? text("stocked") : item.status}</span></div><span class="meta">${item.supplier || "-"} / ${item.quantity} x ${money(item.unitCost)} + ${text("shippingFee")} ${money(item.shippingCost)} + ${text("transportFee")} ${money(item.transportCost)} = ${money(item.totalCost)}</span><div class="item-actions">${!item.stocked ? `<button class="secondary-button" type="button" data-stock-in="${item.id}">${text("stockIn")}</button>` : ""}<button class="secondary-button" type="button" data-edit="purchaseItems" data-id="${item.id}">${text("edit")}</button><button class="danger-button" type="button" data-delete="purchaseItems" data-id="${item.id}">${text("delete")}</button></div></article>`).join("") || emptyList();
@@ -231,15 +231,16 @@ function renderInventory() {
   const totalUnits = state.data.products.reduce((sum, product) => sum + Number(product.stock || 0), 0);
   const lowStock = state.data.products.filter((product) => Number(product.stock || 0) <= 2).length;
   const inventoryValue = state.data.products.reduce((sum, product) => sum + Number(product.stock || 0) * Number(product.price || 0), 0);
+  const salesValue = state.data.products.reduce((sum, product) => sum + Number(product.stock || 0) * Number(product.salePrice || product.price || 0), 0);
   document.querySelector("#inventoryUnits").textContent = totalUnits;
   document.querySelector("#inventoryTotalUnits").textContent = totalUnits;
   document.querySelector("#inventoryLowStock").textContent = lowStock;
-  document.querySelector("#inventoryValue").textContent = money(inventoryValue);
+  document.querySelector("#inventoryValue").textContent = `${money(inventoryValue)} / ${text("salesValue")}: ${money(salesValue)}`;
   document.querySelector("#inventoryLogCount").textContent = state.data.inventoryLogs.length;
 
   const productCards = state.data.products.map((product) => {
     const stock = Number(product.stock || 0);
-    return `<article class="item-card"><div class="item-top"><strong>${product.name}</strong><span class="${stock <= 2 ? "pill warn" : "pill"}">${text("currentStock")}: ${stock}</span></div><span class="meta">${text("customer")}: ${product.customer || "-"} / ${text("inventoryValue")}: ${money(stock * Number(product.price || 0))} / ${product.id}</span></article>`;
+    return `<article class="item-card"><div class="item-top"><strong>${product.name}</strong><span class="${stock <= 2 ? "pill warn" : "pill"}">${text("currentStock")}: ${stock}</span></div><span class="meta">${text("salePrice")}: ${money(product.salePrice || product.price)} / ${text("inventoryValue")}: ${money(stock * Number(product.price || 0))} / ${text("salesValue")}: ${money(stock * Number(product.salePrice || product.price || 0))} / ${product.id}</span></article>`;
   }).join("");
   const logCards = state.data.inventoryLogs.slice(0, 20).map((log) => `<article class="item-card"><div class="item-top"><strong>${productName(log.productId)}</strong><span class="pill blue">${inventoryTypeLabel(log.type)}</span></div><span class="meta">${text("quantity")}: ${log.quantity} / ${text("beforeStock")}: ${log.beforeStock} / ${text("afterStock")}: ${log.afterStock} / ${text("operator")}: ${log.user || "-"} / ${shortDate(log.createdAt)}</span>${log.note ? `<span class="meta">${log.note}</span>` : ""}</article>`).join("");
   document.querySelector("#inventoryList").innerHTML = productCards || emptyList();
@@ -382,7 +383,7 @@ function stockInPurchaseItem(id) {
   if (!item || item.stocked) return;
   let product = state.data.products.find((entry) => entry.id === item.productId);
   if (!product) {
-    product = { id: nextId("P", state.data.products), name: item.item || "新商品", customer: "", price: item.unitCost || 0, stock: 0, image: "" };
+    product = { id: nextId("P", state.data.products), name: item.item || "新商品", customer: "", price: item.unitCost || 0, salePrice: item.unitCost || 0, stock: 0, image: "" };
     item.productId = product.id;
     state.data.products.unshift(product);
   }
