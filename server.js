@@ -15,11 +15,11 @@ const defaultData = {
     { id: "O-002", customer: "Cho", productId: "P-002", item: "限定周邊", quantity: 2, unitPrice: 6800, total: 13600, status: "已採購" },
   ],
   products: [
-    { id: "P-001", name: "藥妝補貨", customer: "林小姐", price: 12800 },
-    { id: "P-002", name: "限定周邊", customer: "Cho", price: 6800 },
+    { id: "P-001", name: "藥妝補貨", customer: "林小姐", price: 12800, stock: 0 },
+    { id: "P-002", name: "限定周邊", customer: "Cho", price: 6800, stock: 0 },
   ],
   purchaseItems: [
-    { id: "I-001", productId: "P-001", item: "藥妝補貨", supplier: "大阪藥妝店", quantity: 1, unitCost: 11800, shippingCost: 500, transportCost: 0, totalCost: 12300, status: "待採購" },
+    { id: "I-001", productId: "P-001", item: "藥妝補貨", supplier: "大阪藥妝店", quantity: 1, unitCost: 11800, shippingCost: 500, transportCost: 0, totalCost: 12300, status: "待採購", stocked: false },
   ],
   packages: [{ id: "B-001", no: "JP-WH-001", customer: "林小姐", status: "日本倉入庫" }],
   shipping: [{ id: "S-001", customer: "林小姐", method: "空運", status: "待出貨" }],
@@ -65,6 +65,7 @@ function writeBackup(reason = "auto") {
 function normalizeData(data) {
   const merged = { ...defaultData, ...data, settings: { ...defaultData.settings, ...(data.settings || {}) } };
   merged.purchaseItems = merged.purchaseItems || [];
+  merged.products = (merged.products || []).map((product) => ({ ...product, stock: Number(product.stock || 0) }));
   merged.customers = (merged.customers || []).map((customer) => ({ ...customer, paymentStatus: customer.paymentStatus || "未付款" }));
   merged.orders = (merged.orders || []).map((order) => {
     const product = (merged.products || []).find((item) => item.id === order.productId || item.name === order.item);
@@ -78,7 +79,7 @@ function normalizeData(data) {
     const unitCost = Number(item.unitCost || item.totalCost || product?.price || 0);
     const shippingCost = Number(item.shippingCost || 0);
     const transportCost = Number(item.transportCost || 0);
-    return { ...item, productId: item.productId || product?.id || "", item: item.item || product?.name || "", quantity, unitCost, shippingCost, transportCost, totalCost: Number(item.totalCost || quantity * unitCost + shippingCost + transportCost), status: item.status || "待採購" };
+    return { ...item, productId: item.productId || product?.id || "", item: item.item || product?.name || "", quantity, unitCost, shippingCost, transportCost, totalCost: Number(item.totalCost || quantity * unitCost + shippingCost + transportCost), status: item.status || "待採購", stocked: Boolean(item.stocked) };
   });
   return merged;
 }

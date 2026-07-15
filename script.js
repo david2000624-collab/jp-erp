@@ -7,9 +7,9 @@ const translations = {
     orders: "訂單", products: "商品", purchaseItems: "進貨項目", packages: "包裹", shipping: "出貨", customers: "客戶", accounting: "對帳", settings: "設定",
     addOrder: "新增訂單", addProduct: "新增商品", addPurchase: "新增進貨", addPackage: "新增包裹", addShipment: "新增出貨", addCustomer: "新增客戶", addPayment: "新增付款",
     save: "儲存", saveSettings: "儲存設定", edit: "修改", delete: "刪除", customerName: "客戶姓名", itemName: "商品名稱", price: "商品金額", paidAmount: "付款金額",
-    quantity: "數量", unitPrice: "單價", unitCost: "進貨單價", shippingCost: "運費", transportCost: "交通費", supplier: "供應商 / 店家", orderTotal: "訂單總額", purchaseTotal: "進貨總成本",
+    quantity: "數量", unitPrice: "單價", unitCost: "進貨單價", shippingCost: "運費", transportCost: "交通費", supplier: "供應商 / 店家", stock: "庫存", orderTotal: "訂單總額", purchaseTotal: "進貨總成本",
     koseiAdvance: "kosei 代墊", choAdvance: "cho 代墊", advanceTwd: "台幣換算", backupStatus: "自動備份", exchangeRate: "日幣換台幣匯率", displayCurrency: "顯示幣別",
-    loginFailed: "帳號或密碼錯誤", noData: "目前沒有資料", paidBy: "付款人", customer: "客戶", method: "方式", contact: "聯絡方式", confirmDelete: "確定要刪除這筆資料嗎？", shippingFee: "運費", transportFee: "交通費"
+    loginFailed: "帳號或密碼錯誤", noData: "目前沒有資料", paidBy: "付款人", customer: "客戶", method: "方式", contact: "聯絡方式", confirmDelete: "確定要刪除這筆資料嗎？", shippingFee: "運費", transportFee: "交通費", stockIn: "入庫存", stocked: "已入庫存"
   },
   ja: {
     appSubtitle: "日本購入代行バックオフィス", loginTitle: "購入代行 ERP", language: "言語", account: "アカウント", password: "パスワード", login: "ログイン", logout: "ログアウト",
@@ -17,9 +17,9 @@ const translations = {
     orders: "注文", products: "商品", purchaseItems: "仕入項目", packages: "荷物", shipping: "出荷", customers: "顧客", accounting: "精算", settings: "設定",
     addOrder: "注文追加", addProduct: "商品追加", addPurchase: "仕入追加", addPackage: "荷物追加", addShipment: "出荷追加", addCustomer: "顧客追加", addPayment: "支払い追加",
     save: "保存", saveSettings: "設定保存", edit: "編集", delete: "削除", customerName: "顧客名", itemName: "商品名", price: "商品金額", paidAmount: "支払金額",
-    quantity: "数量", unitPrice: "単価", unitCost: "仕入単価", shippingCost: "送料", transportCost: "交通費", supplier: "仕入先 / 店舗", orderTotal: "注文合計", purchaseTotal: "仕入合計",
+    quantity: "数量", unitPrice: "単価", unitCost: "仕入単価", shippingCost: "送料", transportCost: "交通費", supplier: "仕入先 / 店舗", stock: "在庫", orderTotal: "注文合計", purchaseTotal: "仕入合計",
     koseiAdvance: "kosei 立替", choAdvance: "cho 立替", advanceTwd: "台湾ドル換算", backupStatus: "自動バックアップ", exchangeRate: "JPYからTWDのレート", displayCurrency: "表示通貨",
-    loginFailed: "アカウントまたはパスワードが違います", noData: "データがありません", paidBy: "支払者", customer: "顧客", method: "方法", contact: "連絡先", confirmDelete: "このデータを削除しますか？", shippingFee: "送料", transportFee: "交通費"
+    loginFailed: "アカウントまたはパスワードが違います", noData: "データがありません", paidBy: "支払者", customer: "顧客", method: "方法", contact: "連絡先", confirmDelete: "このデータを削除しますか？", shippingFee: "送料", transportFee: "交通費", stockIn: "在庫入庫", stocked: "入庫済み"
   }
 };
 
@@ -30,11 +30,11 @@ const defaultData = {
     { id: "O-002", customer: "Cho", productId: "P-002", item: "限定周邊", quantity: 2, unitPrice: 6800, total: 13600, status: "已採購" }
   ],
   products: [
-    { id: "P-001", name: "藥妝補貨", customer: "林小姐", price: 12800 },
-    { id: "P-002", name: "限定周邊", customer: "Cho", price: 6800 }
+    { id: "P-001", name: "藥妝補貨", customer: "林小姐", price: 12800, stock: 0 },
+    { id: "P-002", name: "限定周邊", customer: "Cho", price: 6800, stock: 0 }
   ],
   purchaseItems: [
-    { id: "I-001", productId: "P-001", item: "藥妝補貨", supplier: "大阪藥妝店", quantity: 1, unitCost: 11800, shippingCost: 500, transportCost: 0, totalCost: 12300, status: "待採購" }
+    { id: "I-001", productId: "P-001", item: "藥妝補貨", supplier: "大阪藥妝店", quantity: 1, unitCost: 11800, shippingCost: 500, transportCost: 0, totalCost: 12300, status: "待採購", stocked: false }
   ],
   packages: [{ id: "B-001", no: "JP-WH-001", customer: "林小姐", status: "日本倉入庫" }],
   shipping: [{ id: "S-001", customer: "林小姐", method: "空運", status: "待出貨" }],
@@ -44,7 +44,7 @@ const defaultData = {
 
 const config = {
   orders: { prefix: "O", formId: "orderForm", numeric: ["quantity"], money: ["unitPrice"] },
-  products: { prefix: "P", formId: "productForm", money: ["price"] },
+  products: { prefix: "P", formId: "productForm", numeric: ["stock"], money: ["price"] },
   purchaseItems: { prefix: "I", formId: "purchaseForm", numeric: ["quantity"], money: ["unitCost", "shippingCost", "transportCost"] },
   packages: { prefix: "B", formId: "packageForm" },
   shipping: { prefix: "S", formId: "shippingForm" },
@@ -60,6 +60,7 @@ function loadLocalData() { const saved = localStorage.getItem("erpData"); return
 function normalize(data) {
   const merged = { ...clone(defaultData), ...data, settings: { ...defaultData.settings, ...(data.settings || {}) } };
   merged.purchaseItems = merged.purchaseItems || [];
+  merged.products = (merged.products || []).map((product) => ({ ...product, stock: Number(product.stock || 0) }));
   merged.customers = (merged.customers || []).map((customer) => ({ ...customer, paymentStatus: customer.paymentStatus || "未付款" }));
   merged.orders = (merged.orders || []).map((order) => {
     const product = (merged.products || []).find((item) => item.id === order.productId || item.name === order.item);
@@ -73,7 +74,7 @@ function normalize(data) {
     const unitCost = Number(item.unitCost || product?.price || 0);
     const shippingCost = Number(item.shippingCost || 0);
     const transportCost = Number(item.transportCost || 0);
-    return { ...item, productId: item.productId || product?.id || "", item: item.item || product?.name || "", quantity, unitCost, shippingCost, transportCost, totalCost: quantity * unitCost + shippingCost + transportCost, status: item.status || "待採購" };
+    return { ...item, productId: item.productId || product?.id || "", item: item.item || product?.name || "", quantity, unitCost, shippingCost, transportCost, totalCost: quantity * unitCost + shippingCost + transportCost, status: item.status || "待採購", stocked: Boolean(item.stocked) };
   });
   return merged;
 }
@@ -166,10 +167,10 @@ function renderOrders() {
   document.querySelector("#orderList").innerHTML = state.data.orders.map((order) => `<article class="item-card"><div class="item-top"><strong>${productName(order.productId, order.item)}</strong><span class="${badgeClass(order.status)}">${order.status}</span></div><span class="meta">${text("customer")}: ${order.customer} / ${order.quantity} x ${money(order.unitPrice)} = ${money(order.total)}</span>${actions("orders", order.id)}</article>`).join("") || emptyList();
 }
 function renderProducts() {
-  document.querySelector("#productList").innerHTML = state.data.products.map((product) => `<article class="item-card"><div class="item-top"><strong>${product.name}</strong><span class="pill">${money(product.price)} / ${money(product.price, "TWD")}</span></div><span class="meta">${text("customer")}: ${product.customer} / ${product.id}</span>${actions("products", product.id)}</article>`).join("") || emptyList();
+  document.querySelector("#productList").innerHTML = state.data.products.map((product) => `<article class="item-card"><div class="item-top"><strong>${product.name}</strong><span class="pill">${money(product.price)} / ${money(product.price, "TWD")}</span></div><span class="meta">${text("customer")}: ${product.customer} / ${text("stock")}: ${product.stock || 0} / ${product.id}</span>${actions("products", product.id)}</article>`).join("") || emptyList();
 }
 function renderPurchaseItems() {
-  document.querySelector("#purchaseList").innerHTML = state.data.purchaseItems.map((item) => `<article class="item-card"><div class="item-top"><strong>${productName(item.productId, item.item)}</strong><span class="${badgeClass(item.status)}">${item.status}</span></div><span class="meta">${item.supplier || "-"} / ${item.quantity} x ${money(item.unitCost)} + ${text("shippingFee")} ${money(item.shippingCost)} + ${text("transportFee")} ${money(item.transportCost)} = ${money(item.totalCost)}</span>${actions("purchaseItems", item.id)}</article>`).join("") || emptyList();
+  document.querySelector("#purchaseList").innerHTML = state.data.purchaseItems.map((item) => `<article class="item-card"><div class="item-top"><strong>${productName(item.productId, item.item)}</strong><span class="${badgeClass(item.stocked ? text("stocked") : item.status)}">${item.stocked ? text("stocked") : item.status}</span></div><span class="meta">${item.supplier || "-"} / ${item.quantity} x ${money(item.unitCost)} + ${text("shippingFee")} ${money(item.shippingCost)} + ${text("transportFee")} ${money(item.transportCost)} = ${money(item.totalCost)}</span><div class="item-actions">${!item.stocked ? `<button class="secondary-button" type="button" data-stock-in="${item.id}">${text("stockIn")}</button>` : ""}<button class="secondary-button" type="button" data-edit="purchaseItems" data-id="${item.id}">${text("edit")}</button><button class="danger-button" type="button" data-delete="purchaseItems" data-id="${item.id}">${text("delete")}</button></div></article>`).join("") || emptyList();
 }
 function renderPackages() {
   document.querySelector("#packageList").innerHTML = state.data.packages.map((pack) => `<article class="item-card"><div class="item-top"><strong>${pack.no}</strong><span class="${badgeClass(pack.status)}">${pack.status}</span></div><span class="meta">${text("customer")}: ${pack.customer}</span>${actions("packages", pack.id)}</article>`).join("") || emptyList();
@@ -257,6 +258,22 @@ function upsertFromForm(event, collection) {
   form.reset(); syncOrderPriceFromProduct(); syncPurchaseCostFromProduct(); saveData(); renderAll();
 }
 
+function stockInPurchaseItem(id) {
+  const item = state.data.purchaseItems.find((entry) => entry.id === id);
+  if (!item || item.stocked) return;
+  let product = state.data.products.find((entry) => entry.id === item.productId);
+  if (!product) {
+    product = { id: item.productId || nextId("P", state.data.products), name: item.item || "新商品", customer: "", price: item.unitCost || 0, stock: 0 };
+    item.productId = product.id;
+    state.data.products.unshift(product);
+  }
+  product.stock = Number(product.stock || 0) + Number(item.quantity || 0);
+  item.stocked = true;
+  item.status = "已入庫";
+  saveData();
+  renderAll();
+}
+
 document.querySelector("#loginBtn").addEventListener("click", () => {
   const username = document.querySelector("#username").value.trim();
   const password = document.querySelector("#password").value.trim();
@@ -293,7 +310,9 @@ document.querySelector("#settingsForm").addEventListener("submit", (event) => {
 document.addEventListener("click", (event) => {
   const editButton = event.target.closest("[data-edit]");
   const deleteButton = event.target.closest("[data-delete]");
+  const stockInButton = event.target.closest("[data-stock-in]");
   if (editButton) fillForm(editButton.dataset.edit, editButton.dataset.id);
+  if (stockInButton) stockInPurchaseItem(stockInButton.dataset.stockIn);
   if (deleteButton && confirm(text("confirmDelete"))) { const collection = deleteButton.dataset.delete; state.data[collection] = state.data[collection].filter((item) => item.id !== deleteButton.dataset.id); saveData(); renderAll(); }
 });
 if ("serviceWorker" in navigator && hasServer) navigator.serviceWorker.register("sw.js");
