@@ -123,7 +123,7 @@ function normalizeData(data) {
     afterStock: Number(log.afterStock || 0),
     createdAt: log.createdAt || new Date().toISOString(),
   }));
-  merged.payments = (merged.payments || []).map((payment) => ({ ...payment, productId: payment.type === "shipping" ? "" : payment.productId || "", type: payment.type || "product", note: payment.note || "", amount: Number(payment.amount || 0) }));
+  merged.payments = (merged.payments || []).map((payment) => ({ ...payment, productId: payment.type === "shipping" ? "" : payment.productId || "", type: payment.type || "product", payer: payment.payer || "kosei", note: payment.note || "", amount: Number(payment.amount || 0) }));
   merged.splitPayments = (merged.splitPayments || []).map((payment) => {
     let receiver = payment.receiver || "kosei";
     const payer = payment.payer || (receiver === "kosei" ? "cho" : "kosei");

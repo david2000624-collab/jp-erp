@@ -5,22 +5,22 @@ const translations = {
     appSubtitle: "日本代購後台", loginTitle: "代購 ERP", language: "語言", account: "帳號", password: "密碼", login: "登入", logout: "登出", jpyCurrency: "日幣", twdCurrency: "台幣",
     todayWork: "今日工作", dashboard: "總覽", pendingOrders: "待處理訂單", warehouseItems: "倉庫包裹", unpaidCustomers: "未付款客戶", unpaidOrders: "未收款訂單", advanceTotal: "代墊總額",
     orders: "訂單", products: "商品", purchaseItems: "進貨項目", inventory: "庫存", packages: "包裹", shipping: "出貨", customers: "客戶", accounting: "對帳", profit: "獲利", settings: "設定",
-    addOrder: "新增訂單", addProduct: "新增商品", addPurchase: "新增進貨", addPackage: "新增包裹", addShipment: "新增出貨", addCustomer: "新增客戶", addPayment: "新增付款", addShippingAdvance: "新增運費代墊費用", addSplitPayment: "新增拆款", addSettlementPayment: "新增結算付款",
+    addOrder: "新增訂單", addProduct: "新增商品", addPurchase: "新增進貨", addPackage: "新增包裹", addShipment: "新增出貨", addCustomer: "新增客戶", addPayment: "新增付款", addShippingAdvance: "新增運費代墊費用", addSplitPayment: "新增拆款", addSettlementPayment: "新增結算結果",
     save: "儲存", saveSettings: "儲存設定", edit: "修改", delete: "刪除", customerName: "客戶姓名", itemName: "商品名稱", price: "商品金額", salePrice: "售價", averageUnitPrice: "平均單價", paidAmount: "付款金額", splitAmount: "拆款金額", settlementAmount: "結算金額", paymentNote: "備註", productImage: "商品圖片", selectProduct: "選擇既有商品",
     quantity: "數量", unitPrice: "單價", unitCost: "進貨單價", shippingCost: "運費", transportCost: "交通費", taxCost: "稅金", supplier: "供應商 / 店家", stock: "庫存", orderTotal: "訂單總額", purchaseTotal: "進貨總成本",
     koseiAdvance: "kosei 代墊", choAdvance: "cho 代墊", advanceTwd: "目前幣別", productAdvance: "商品代墊", shippingAdvance: "運費代墊", backupStatus: "自動備份", dailyBackup: "每天", exchangeRate: "日幣換台幣匯率", displayCurrency: "顯示幣別", manualSave: "手動儲存", createOnlineBackup: "建立線上備份", loadOnlineBackups: "查看線上備份", restoreBackup: "還原", exportData: "匯出資料", exportExcel: "匯出 Excel", importData: "匯入資料", savedNow: "已儲存",
-    loginFailed: "帳號或密碼錯誤", noData: "目前沒有資料", paidBy: "付款人", receivedBy: "收款人", customer: "客戶", method: "方式", contact: "聯絡方式", confirmDelete: "確定要刪除這筆資料嗎？", confirmRestore: "確定要還原這份線上備份嗎？目前資料會先自動備份。", shippingFee: "運費", transportFee: "交通費", taxFee: "稅金", stockIn: "入庫存", addToProduct: "入商品", stocked: "已入庫存", stockDeducted: "已扣庫存", packageNo: "包裹編號", salesRevenue: "銷售收入", productCost: "商品成本", grossProfit: "毛利", profitMargin: "毛利率", koseiShare: "kosei 分潤", choShare: "cho 分潤", splitProfit: "獲利對分", splitPayments: "拆款紀錄", settlementPayments: "結算付款紀錄", orderProfitDetails: "訂單獲利明細", koseiPaidSplit: "kosei 已收", choPaidSplit: "cho 已收", koseiRemainingSplit: "kosei 剩餘未收", choRemainingSplit: "cho 剩餘未收", settlement: "結算結果", advanceSettlement: "代墊互扣", profitSettlement: "淨利拆款", finalSettlement: "最後誰給誰", settlementNote: "結算說明", noSettlement: "不用互給", payTo: "給", paidTo: "已給", koseiPayer: "kosei 付款", choPayer: "cho 付款", koseiReceiver: "kosei 收款", choReceiver: "cho 收款", koseiReceived: "kosei 已收", choReceived: "cho 已收",
+    loginFailed: "帳號或密碼錯誤", noData: "目前沒有資料", paidBy: "付款人", receivedBy: "收款人", customer: "客戶", method: "方式", contact: "聯絡方式", confirmDelete: "確定要刪除這筆資料嗎？", confirmRestore: "確定要還原這份線上備份嗎？目前資料會先自動備份。", shippingFee: "運費", transportFee: "交通費", taxFee: "稅金", stockIn: "入庫存", addToProduct: "入商品", stocked: "已入庫存", stockDeducted: "已扣庫存", packageNo: "包裹編號", salesRevenue: "銷售收入", productCost: "商品成本", grossProfit: "毛利", profitMargin: "毛利率", koseiShare: "kosei 分潤", choShare: "cho 分潤", splitProfit: "獲利對分", splitPayments: "拆款紀錄", settlementPayments: "結算結果紀錄", orderProfitDetails: "訂單獲利明細", koseiPaidSplit: "kosei 已收", choPaidSplit: "cho 已收", koseiRemainingSplit: "kosei 剩餘未收", choRemainingSplit: "cho 剩餘未收", settlement: "結算結果", advanceSettlement: "代墊互扣", profitSettlement: "淨利拆款", finalSettlement: "最後誰給誰", settlementNote: "結算說明", noSettlement: "不用互給", payTo: "給", paidTo: "已給", koseiPayer: "kosei 付款", choPayer: "cho 付款", koseiReceiver: "kosei 收款", choReceiver: "cho 收款", koseiReceived: "kosei 已收", choReceived: "cho 已收", manualSettlementOnly: "只顯示手動輸入結果",
     addInventoryLog: "調整庫存", stockOut: "出庫", stockSet: "盤點設定", inventoryNote: "備註", movementType: "類型", inventoryHistory: "庫存紀錄", currentStock: "目前庫存", lowStock: "低庫存", inventoryValue: "庫存價值", salesValue: "可售金額", totalUnits: "總庫存數", beforeStock: "調整前", afterStock: "調整後", operator: "操作人"
   },
   ja: {
     appSubtitle: "日本購入代行バックオフィス", loginTitle: "購入代行 ERP", language: "言語", account: "アカウント", password: "パスワード", login: "ログイン", logout: "ログアウト", jpyCurrency: "日本円", twdCurrency: "台湾ドル",
     todayWork: "本日の業務", dashboard: "概要", pendingOrders: "未処理注文", warehouseItems: "倉庫荷物", unpaidCustomers: "未払い顧客", unpaidOrders: "未入金注文", advanceTotal: "立替合計",
     orders: "注文", products: "商品", purchaseItems: "仕入項目", inventory: "在庫", packages: "荷物", shipping: "出荷", customers: "顧客", accounting: "精算", profit: "利益", settings: "設定",
-    addOrder: "注文追加", addProduct: "商品追加", addPurchase: "仕入追加", addPackage: "荷物追加", addShipment: "出荷追加", addCustomer: "顧客追加", addPayment: "支払い追加", addShippingAdvance: "送料立替費用を追加", addSplitPayment: "分配支払い追加", addSettlementPayment: "精算支払い追加",
+    addOrder: "注文追加", addProduct: "商品追加", addPurchase: "仕入追加", addPackage: "荷物追加", addShipment: "出荷追加", addCustomer: "顧客追加", addPayment: "支払い追加", addShippingAdvance: "送料立替費用を追加", addSplitPayment: "分配支払い追加", addSettlementPayment: "精算結果追加",
     save: "保存", saveSettings: "設定保存", edit: "編集", delete: "削除", customerName: "顧客名", itemName: "商品名", price: "商品金額", salePrice: "販売価格", averageUnitPrice: "平均単価", paidAmount: "支払金額", splitAmount: "分配金額", settlementAmount: "精算金額", paymentNote: "メモ", productImage: "商品画像", selectProduct: "既存商品を選択",
     quantity: "数量", unitPrice: "単価", unitCost: "仕入単価", shippingCost: "送料", transportCost: "交通費", taxCost: "税金", supplier: "仕入先 / 店舗", stock: "在庫", orderTotal: "注文合計", purchaseTotal: "仕入合計",
     koseiAdvance: "kosei 立替", choAdvance: "cho 立替", advanceTwd: "現在通貨", productAdvance: "商品立替", shippingAdvance: "送料立替", backupStatus: "自動バックアップ", dailyBackup: "毎日", exchangeRate: "JPYからTWDのレート", displayCurrency: "表示通貨", manualSave: "手動保存", createOnlineBackup: "オンラインバックアップ作成", loadOnlineBackups: "オンラインバックアップ表示", restoreBackup: "復元", exportData: "データを書き出す", exportExcel: "Excel出力", importData: "データを読み込む", savedNow: "保存しました",
-    loginFailed: "アカウントまたはパスワードが違います", noData: "データがありません", paidBy: "支払者", receivedBy: "受取者", customer: "顧客", method: "方法", contact: "連絡先", confirmDelete: "このデータを削除しますか？", confirmRestore: "このオンラインバックアップを復元しますか？現在のデータは先に自動保存されます。", shippingFee: "送料", transportFee: "交通費", taxFee: "税金", stockIn: "在庫入庫", addToProduct: "商品に追加", stocked: "入庫済み", stockDeducted: "在庫引落済み", packageNo: "荷物番号", salesRevenue: "売上", productCost: "商品原価", grossProfit: "粗利", profitMargin: "粗利率", koseiShare: "kosei 分配", choShare: "cho 分配", splitProfit: "利益折半", splitPayments: "分配記録", settlementPayments: "精算支払い記録", orderProfitDetails: "注文利益明細", koseiPaidSplit: "kosei 受取済み", choPaidSplit: "cho 受取済み", koseiRemainingSplit: "kosei 未受取", choRemainingSplit: "cho 未受取", settlement: "精算結果", advanceSettlement: "立替相殺", profitSettlement: "利益分配", finalSettlement: "最終支払い", settlementNote: "精算メモ", noSettlement: "支払い不要", payTo: "から", paidTo: "支払済み", koseiPayer: "kosei 支払い", choPayer: "cho 支払い", koseiReceiver: "kosei 受取", choReceiver: "cho 受取", koseiReceived: "kosei 受取済み", choReceived: "cho 受取済み",
+    loginFailed: "アカウントまたはパスワードが違います", noData: "データがありません", paidBy: "支払者", receivedBy: "受取者", customer: "顧客", method: "方法", contact: "連絡先", confirmDelete: "このデータを削除しますか？", confirmRestore: "このオンラインバックアップを復元しますか？現在のデータは先に自動保存されます。", shippingFee: "送料", transportFee: "交通費", taxFee: "税金", stockIn: "在庫入庫", addToProduct: "商品に追加", stocked: "入庫済み", stockDeducted: "在庫引落済み", packageNo: "荷物番号", salesRevenue: "売上", productCost: "商品原価", grossProfit: "粗利", profitMargin: "粗利率", koseiShare: "kosei 分配", choShare: "cho 分配", splitProfit: "利益折半", splitPayments: "分配記録", settlementPayments: "精算結果記録", orderProfitDetails: "注文利益明細", koseiPaidSplit: "kosei 受取済み", choPaidSplit: "cho 受取済み", koseiRemainingSplit: "kosei 未受取", choRemainingSplit: "cho 未受取", settlement: "精算結果", advanceSettlement: "立替相殺", profitSettlement: "利益分配", finalSettlement: "最終支払い", settlementNote: "精算メモ", noSettlement: "支払い不要", payTo: "から", paidTo: "支払済み", koseiPayer: "kosei 支払い", choPayer: "cho 支払い", koseiReceiver: "kosei 受取", choReceiver: "cho 受取", koseiReceived: "kosei 受取済み", choReceived: "cho 受取済み", manualSettlementOnly: "手入力の結果のみ表示",
     addInventoryLog: "在庫調整", stockOut: "出庫", stockSet: "棚卸設定", inventoryNote: "メモ", movementType: "種類", inventoryHistory: "在庫履歴", currentStock: "現在在庫", lowStock: "低在庫", inventoryValue: "在庫金額", salesValue: "販売予定額", totalUnits: "総在庫数", beforeStock: "調整前", afterStock: "調整後", operator: "担当者"
   }
 };
@@ -114,7 +114,7 @@ function normalize(data) {
     afterStock: Number(log.afterStock || 0),
     createdAt: log.createdAt || new Date().toISOString()
   }));
-  merged.payments = (merged.payments || []).map((payment) => ({ ...payment, productId: payment.type === "shipping" ? "" : payment.productId || "", type: payment.type || "product", note: payment.note || "", amount: Number(payment.amount || 0) }));
+  merged.payments = (merged.payments || []).map((payment) => ({ ...payment, productId: payment.type === "shipping" ? "" : payment.productId || "", type: payment.type || "product", payer: payment.payer || "kosei", note: payment.note || "", amount: Number(payment.amount || 0) }));
   merged.splitPayments = (merged.splitPayments || []).map((payment) => {
     let receiver = payment.receiver || "kosei";
     const payer = payment.payer || (receiver === "kosei" ? "cho" : "kosei");
@@ -196,8 +196,9 @@ function splitPaymentTotals() {
     return totals;
   }, { kosei: 0, cho: 0 });
 }
-function advanceTotals() {
+function advanceTotals(type = "") {
   return state.data.payments.reduce((totals, payment) => {
+    if (type && payment.type !== type) return totals;
     totals[payment.payer] = Number(totals[payment.payer] || 0) + Number(payment.amount || 0);
     return totals;
   }, { kosei: 0, cho: 0 });
@@ -216,6 +217,10 @@ function settlementReceivedTotals() {
     totals[payment.receiver] = Number(totals[payment.receiver] || 0) + Number(payment.amount || 0);
     return totals;
   }, { kosei: 0, cho: 0 });
+}
+function settlementResultText(type = "") {
+  const rows = state.data.settlementPayments.filter((payment) => !type || payment.type === type);
+  return rows.length ? rows.map((payment) => directionText(payment.payer, payment.receiver, payment.amount)).join(" / ") : text("noSettlement");
 }
 function directionText(from, to, amount) {
   return Math.abs(amount) < 0.0001 ? text("noSettlement") : `${from} ${text("payTo")} ${to} ${money(Math.abs(amount))}`;
@@ -524,21 +529,21 @@ function renderCustomers() {
 }
 function renderAccounting() {
   const totals = advanceTotals();
+  const productTotals = advanceTotals("product");
+  const shippingTotals = advanceTotals("shipping");
   const total = totals.kosei + totals.cho;
-  const shippingTotal = state.data.payments.filter((payment) => payment.type === "shipping").reduce((sum, payment) => sum + Number(payment.amount || 0), 0);
-  const settlement = settlementSummary();
   const received = settlementReceivedTotals();
-  document.querySelector("#koseiAdvance").textContent = money(totals.kosei);
-  document.querySelector("#choAdvance").textContent = money(totals.cho);
-  document.querySelector("#shippingAdvance").textContent = money(shippingTotal);
+  document.querySelector("#koseiAdvance").textContent = `${money(totals.kosei)} / ${text("productAdvance")} ${money(productTotals.kosei)} / ${text("shippingAdvance")} ${money(shippingTotals.kosei)}`;
+  document.querySelector("#choAdvance").textContent = `${money(totals.cho)} / ${text("productAdvance")} ${money(productTotals.cho)} / ${text("shippingAdvance")} ${money(shippingTotals.cho)}`;
+  document.querySelector("#shippingAdvance").textContent = `kosei ${money(shippingTotals.kosei)} / cho ${money(shippingTotals.cho)}`;
   document.querySelector("#advanceTotal").textContent = money(total);
   document.querySelector("#advanceTwd").textContent = money(total);
-  document.querySelector("#advanceSettlement").textContent = settlement.advanceText;
-  document.querySelector("#profitSettlement").textContent = settlement.profitText;
-  document.querySelector("#finalSettlement").textContent = settlement.finalText;
+  document.querySelector("#advanceSettlement").textContent = settlementResultText("advance");
+  document.querySelector("#profitSettlement").textContent = settlementResultText("profit");
+  document.querySelector("#finalSettlement").textContent = settlementResultText();
   document.querySelector("#koseiReceivedSettlement").textContent = money(received.kosei);
   document.querySelector("#choReceivedSettlement").textContent = money(received.cho);
-  document.querySelector("#settlementNote").textContent = `${text("koseiAdvance")} ${money(totals.kosei)} / ${text("choAdvance")} ${money(totals.cho)}`;
+  document.querySelector("#settlementNote").textContent = text("manualSettlementOnly");
   document.querySelector("#settlementPaymentList").innerHTML = state.data.settlementPayments.map((payment) => `<article class="item-card"><div class="item-top"><strong>${payment.type === "profit" ? text("profitSettlement") : text("advanceSettlement")} - ${payment.payer} ${text("payTo")} ${payment.receiver}</strong><span class="pill blue">${money(payment.amount)}</span></div><span class="meta">${shortDate(payment.createdAt)}${payment.note ? ` / ${payment.note}` : ""}</span>${actions("settlementPayments", payment.id)}</article>`).join("") || emptyList();
   document.querySelector("#paymentList").innerHTML = state.data.payments.map((payment) => {
     const product = state.data.products.find((item) => item.id === payment.productId);
