@@ -10,7 +10,7 @@
     <title>代購 ERP 後台</title>
     <link rel="manifest" href="manifest.webmanifest" />
     <link rel="apple-touch-icon" href="icon.svg" />
-    <link rel="stylesheet" href="styles.css?v=28" />
+    <link rel="stylesheet" href="styles.css?v=29" />
   </head>
   <body>
     <section id="loginScreen" class="login-screen">
@@ -201,6 +201,7 @@
             <div class="title-actions">
               <button class="small-button" data-open-form="accountingForm" type="button" data-i18n="addPayment">新增付款</button>
               <button class="small-button" data-open-shipping-advance type="button" data-i18n="addShippingAdvance">新增運費代墊費用</button>
+              <button class="small-button" data-open-form="settlementPaymentForm" type="button" data-i18n="addSettlementPayment">新增結算付款</button>
             </div>
           </div>
           <form id="accountingForm" class="quick-form hidden" data-collection="payments">
@@ -209,6 +210,13 @@
             <select data-field="payer"><option value="kosei">kosei</option><option value="cho">cho</option></select>
             <input id="paymentNote" data-field="note" data-i18n-placeholder="paymentNote" placeholder="備註" />
             <div class="money-field"><input data-field="amount" inputmode="decimal" data-i18n-placeholder="paidAmount" placeholder="付款金額" /><select data-currency-for="amount"><option value="JPY" data-i18n="jpyCurrency">日幣</option><option value="TWD" data-i18n="twdCurrency">台幣</option></select></div>
+            <button class="primary-button" type="submit" data-i18n="save">儲存</button>
+          </form>
+          <form id="settlementPaymentForm" class="quick-form hidden" data-collection="settlementPayments">
+            <select data-field="type"><option value="advance" data-i18n="advanceSettlement">代墊互扣</option><option value="profit" data-i18n="profitSettlement">淨利拆款</option></select>
+            <select data-field="receiver"><option value="kosei">給 kosei</option><option value="cho">給 cho</option></select>
+            <div class="money-field"><input data-field="amount" inputmode="decimal" data-i18n-placeholder="settlementAmount" placeholder="結算金額" /><select data-currency-for="amount"><option value="JPY" data-i18n="jpyCurrency">日幣</option><option value="TWD" data-i18n="twdCurrency">台幣</option></select></div>
+            <input data-field="note" data-i18n-placeholder="paymentNote" placeholder="備註" />
             <button class="primary-button" type="submit" data-i18n="save">儲存</button>
           </form>
           <div class="advance-box">
@@ -225,6 +233,8 @@
             <div><span data-i18n="finalSettlement">最後誰給誰</span><strong id="finalSettlement">-</strong></div>
             <div><span data-i18n="settlementNote">結算說明</span><strong id="settlementNote">-</strong></div>
           </div>
+          <div class="section-title compact-title"><h2 data-i18n="settlementPayments">結算付款紀錄</h2></div>
+          <div id="settlementPaymentList" class="list"></div>
           <div id="paymentList" class="list"></div>
         </section>
 
@@ -255,6 +265,6 @@
         <button class="bottom-link" data-view="settings" type="button" data-i18n="settings">設定</button>
       </nav>
     </section>
-    <script src="script.js?v=28"></script>
+    <script src="script.js?v=29"></script>
   </body>
 </html>
