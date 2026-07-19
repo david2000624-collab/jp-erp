@@ -123,7 +123,12 @@ function normalizeData(data) {
     createdAt: log.createdAt || new Date().toISOString(),
   }));
   merged.payments = (merged.payments || []).map((payment) => ({ ...payment, productId: payment.type === "shipping" ? "" : payment.productId || "", type: payment.type || "product", note: payment.note || "", amount: Number(payment.amount || 0) }));
-  merged.splitPayments = (merged.splitPayments || []).map((payment) => ({ ...payment, receiver: payment.receiver || "kosei", note: payment.note || "", amount: Number(payment.amount || 0), createdAt: payment.createdAt || new Date().toISOString() }));
+  merged.splitPayments = (merged.splitPayments || []).map((payment) => {
+    let receiver = payment.receiver || "kosei";
+    const payer = payment.payer || (receiver === "kosei" ? "cho" : "kosei");
+    if (payer === receiver) receiver = payer === "kosei" ? "cho" : "kosei";
+    return { ...payment, payer, receiver, note: payment.note || "", amount: Number(payment.amount || 0), createdAt: payment.createdAt || new Date().toISOString() };
+  });
   merged.settlementPayments = (merged.settlementPayments || []).map((payment) => {
     let receiver = payment.receiver || "kosei";
     const payer = payment.payer || (receiver === "kosei" ? "cho" : "kosei");

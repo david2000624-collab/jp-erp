@@ -10,7 +10,7 @@
     <title>代購 ERP 後台</title>
     <link rel="manifest" href="manifest.webmanifest" />
     <link rel="apple-touch-icon" href="icon.svg" />
-    <link rel="stylesheet" href="styles.css?v=30" />
+    <link rel="stylesheet" href="styles.css?v=31" />
   </head>
   <body>
     <section id="loginScreen" class="login-screen">
@@ -139,7 +139,8 @@
         <section id="profit" class="view">
           <div class="section-title"><h2 data-i18n="profit">獲利</h2><button class="small-button" data-open-form="splitPaymentForm" type="button" data-i18n="addSplitPayment">新增拆款</button></div>
           <form id="splitPaymentForm" class="quick-form hidden" data-collection="splitPayments">
-            <select data-field="receiver"><option value="kosei">kosei</option><option value="cho">cho</option></select>
+            <select data-field="payer"><option value="kosei" data-i18n="koseiPayer">kosei 付款</option><option value="cho" data-i18n="choPayer">cho 付款</option></select>
+            <select data-field="receiver"><option value="kosei" data-i18n="koseiReceiver">kosei 收款</option><option value="cho" data-i18n="choReceiver">cho 收款</option></select>
             <div class="money-field"><input data-field="amount" inputmode="decimal" data-i18n-placeholder="splitAmount" placeholder="拆款金額" /><select data-currency-for="amount"><option value="JPY" data-i18n="jpyCurrency">日幣</option><option value="TWD" data-i18n="twdCurrency">台幣</option></select></div>
             <input data-field="note" data-i18n-placeholder="paymentNote" placeholder="備註" />
             <button class="primary-button" type="submit" data-i18n="save">儲存</button>
@@ -268,6 +269,6 @@
         <button class="bottom-link" data-view="settings" type="button" data-i18n="settings">設定</button>
       </nav>
     </section>
-    <script src="script.js?v=30"></script>
+    <script src="script.js?v=31"></script>
   </body>
 </html>
