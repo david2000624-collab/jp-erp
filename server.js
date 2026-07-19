@@ -100,6 +100,7 @@ function normalizeData(data) {
       contact: order.contact || customer.contact || "",
       packageNo: order.packageNo || pack.no || "",
       shippingMethod: order.shippingMethod || shipment.method || "",
+      paymentReceiver: order.paymentReceiver || "",
       stockDeducted: Boolean(order.stockDeducted),
       status: order.status || customer.paymentStatus || shipment.status || pack.status || "報價中",
       quantity,

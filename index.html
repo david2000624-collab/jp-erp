@@ -10,7 +10,7 @@
     <title>代購 ERP 後台</title>
     <link rel="manifest" href="manifest.webmanifest" />
     <link rel="apple-touch-icon" href="icon.svg" />
-    <link rel="stylesheet" href="styles.css?v=31" />
+    <link rel="stylesheet" href="styles.css?v=32" />
   </head>
   <body>
     <section id="loginScreen" class="login-screen">
@@ -74,6 +74,7 @@
             <input data-field="packageNo" data-i18n-placeholder="packageNo" placeholder="包裹編號" />
             <select data-field="shippingMethod"><option value="">出貨方式</option><option value="空運">空運</option><option value="海運">海運</option><option value="EMS">EMS</option></select>
             <select data-field="status"><option value="報價中">報價中</option><option value="待付款">待付款</option><option value="已採購">已採購</option><option value="已入庫">已入庫</option><option value="已出貨">已出貨</option><option value="已收款">已收款</option></select>
+            <select data-field="paymentReceiver"><option value="" data-i18n="receivedBy">收款人</option><option value="kosei">kosei</option><option value="cho">cho</option></select>
             <div class="form-total"><span data-i18n="orderTotal">訂單總額</span><strong id="orderTotalPreview">¥0</strong></div>
             <button class="primary-button" type="submit" data-i18n="save">儲存</button>
           </form>
@@ -269,6 +270,6 @@
         <button class="bottom-link" data-view="settings" type="button" data-i18n="settings">設定</button>
       </nav>
     </section>
-    <script src="script.js?v=31"></script>
+    <script src="script.js?v=32"></script>
   </body>
 </html>

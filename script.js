@@ -90,6 +90,7 @@ function normalize(data) {
       contact: order.contact || customer.contact || "",
       packageNo: order.packageNo || pack.no || "",
       shippingMethod: order.shippingMethod || shipment.method || "",
+      paymentReceiver: order.paymentReceiver || "",
       stockDeducted: Boolean(order.stockDeducted),
       status: order.status || customer.paymentStatus || shipment.status || pack.status || "報價中",
       quantity,
@@ -380,7 +381,7 @@ function exportExcel() {
   try {
     const data = normalize(state.data);
     const tables = [
-      excelTable(text("orders"), ["ID", text("customer"), text("products"), text("quantity"), "JPY", "TWD", "Status"], data.orders.map((order) => [order.id, order.customer, productName(order.productId, order.item), order.quantity, excelMoney(order.total), excelMoney(jpyToTwd(order.total)), order.status])),
+      excelTable(text("orders"), ["ID", text("customer"), text("products"), text("quantity"), "JPY", "TWD", "Status", text("receivedBy")], data.orders.map((order) => [order.id, order.customer, productName(order.productId, order.item), order.quantity, excelMoney(order.total), excelMoney(jpyToTwd(order.total)), order.status, order.paymentReceiver || ""])),
       excelTable(text("products"), ["ID", text("itemName"), text("customer"), text("stock"), text("price"), text("shippingFee"), text("salePrice"), text("averageUnitPrice")], data.products.map((product) => [product.id, product.name, product.customer, product.stock, excelMoney(product.price), excelMoney(product.shippingCost), excelMoney(product.salePrice || product.price), excelMoney(averageUnitPrice(product))])),
       excelTable(text("purchaseItems"), ["ID", text("itemName"), text("supplier"), text("quantity"), text("unitCost"), text("shippingFee"), text("transportFee"), text("taxFee"), text("purchaseTotal"), "Status"], data.purchaseItems.map((item) => [item.id, productName(item.productId, item.item), item.supplier, item.quantity, excelMoney(item.unitCost), excelMoney(item.shippingCost), excelMoney(item.transportCost), excelMoney(item.taxCost), excelMoney(item.totalCost), item.stocked ? text("stocked") : item.status])),
       excelTable(text("inventory"), ["ID", text("itemName"), text("stock"), text("price"), text("salePrice"), text("inventoryValue"), text("salesValue")], data.products.map((product) => [product.id, product.name, product.stock, excelMoney(product.price), excelMoney(product.salePrice || product.price), excelMoney(Number(product.stock || 0) * Number(product.price || 0)), excelMoney(Number(product.stock || 0) * Number(product.salePrice || product.price || 0))])),
@@ -483,8 +484,8 @@ function syncPurchaseCostFromProduct() {
 
 function renderOrders() {
   document.querySelector("#orderList").innerHTML = state.data.orders.map((order) => {
-    const logistics = [order.packageNo ? `${text("packageNo")}: ${order.packageNo}` : "", order.shippingMethod ? `${text("shipping")}: ${order.shippingMethod}` : "", order.contact ? `${text("contact")}: ${order.contact}` : "", order.stockDeducted ? text("stockDeducted") : ""].filter(Boolean).join(" / ");
-    return `<article class="item-card"><div class="item-top"><strong>${productName(order.productId, order.item)}</strong><span class="${badgeClass(order.status)}">${order.status}</span></div><span class="meta">${text("customer")}: ${order.customer} / ${order.quantity} x ${money(order.unitPrice)} = ${money(order.total)}</span>${logistics ? `<span class="meta">${logistics}</span>` : ""}<div class="item-actions"><button class="secondary-button" type="button" data-order-status="${order.id}" data-status="已出貨">已出貨</button><button class="secondary-button" type="button" data-order-status="${order.id}" data-status="已收款">已收款</button><button class="secondary-button" type="button" data-edit="orders" data-id="${order.id}">${text("edit")}</button><button class="danger-button" type="button" data-delete="orders" data-id="${order.id}">${text("delete")}</button></div></article>`;
+    const logistics = [order.packageNo ? `${text("packageNo")}: ${order.packageNo}` : "", order.shippingMethod ? `${text("shipping")}: ${order.shippingMethod}` : "", order.paymentReceiver ? `${text("receivedBy")}: ${order.paymentReceiver}` : "", order.contact ? `${text("contact")}: ${order.contact}` : "", order.stockDeducted ? text("stockDeducted") : ""].filter(Boolean).join(" / ");
+    return `<article class="item-card"><div class="item-top"><strong>${productName(order.productId, order.item)}</strong><span class="${badgeClass(order.status)}">${order.status}</span></div><span class="meta">${text("customer")}: ${order.customer} / ${order.quantity} x ${money(order.unitPrice)} = ${money(order.total)}</span>${logistics ? `<span class="meta">${logistics}</span>` : ""}<div class="item-actions"><button class="secondary-button" type="button" data-order-status="${order.id}" data-status="已出貨">已出貨</button><button class="secondary-button" type="button" data-order-receiver="${order.id}" data-receiver="kosei">kosei ${text("receivedBy")}</button><button class="secondary-button" type="button" data-order-receiver="${order.id}" data-receiver="cho">cho ${text("receivedBy")}</button><button class="secondary-button" type="button" data-edit="orders" data-id="${order.id}">${text("edit")}</button><button class="danger-button" type="button" data-delete="orders" data-id="${order.id}">${text("delete")}</button></div></article>`;
   }).join("") || emptyList();
 }
 function renderProducts() {
@@ -605,6 +606,7 @@ function formValues(form, collection) {
     const product = state.data.products.find((item) => item.id === values.productId);
     values.item = product?.name || "";
     values.total = Number(values.quantity || 0) * Number(values.unitPrice || 0);
+    if (values.paymentReceiver) values.status = "已收款";
   }
   if (collection === "purchaseItems") {
     const product = state.data.products.find((item) => item.id === values.productId);
@@ -814,11 +816,21 @@ document.addEventListener("click", (event) => {
   const stockInButton = event.target.closest("[data-stock-in]");
   const addProductButton = event.target.closest("[data-add-product]");
   const orderStatusButton = event.target.closest("[data-order-status]");
+  const orderReceiverButton = event.target.closest("[data-order-receiver]");
   const restoreBackupButton = event.target.closest("[data-restore-backup]");
   if (editButton) fillForm(editButton.dataset.edit, editButton.dataset.id);
   if (addProductButton) addPurchaseItemToProduct(addProductButton.dataset.addProduct);
   if (stockInButton) stockInPurchaseItem(stockInButton.dataset.stockIn);
   if (restoreBackupButton) restoreOnlineBackup(restoreBackupButton.dataset.restoreBackup);
+  if (orderReceiverButton) {
+    const order = state.data.orders.find((item) => item.id === orderReceiverButton.dataset.orderReceiver);
+    if (order) {
+      order.paymentReceiver = orderReceiverButton.dataset.receiver;
+      order.status = "已收款";
+      saveData();
+      renderAll();
+    }
+  }
   if (orderStatusButton) {
     const order = state.data.orders.find((item) => item.id === orderStatusButton.dataset.orderStatus);
     if (order) {
