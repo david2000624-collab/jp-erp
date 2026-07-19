@@ -1,4 +1,4 @@
-const CACHE_NAME = "jp-erp-v23";
+const CACHE_NAME = "jp-erp-v25";
 const ASSETS = ["./", "./index.html", "./styles.css", "./script.js", "./manifest.webmanifest", "./icon.svg"];
 
 self.addEventListener("install", (event) => {
@@ -19,5 +19,5 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  event.respondWith(caches.match(event.request).then((cached) => cached || fetch(event.request)));
+  event.respondWith(fetch(event.request).catch(() => caches.match(event.request)));
 });

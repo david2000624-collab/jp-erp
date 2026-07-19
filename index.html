@@ -10,7 +10,7 @@
     <title>代購 ERP 後台</title>
     <link rel="manifest" href="manifest.webmanifest" />
     <link rel="apple-touch-icon" href="icon.svg" />
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="styles.css?v=25" />
   </head>
   <body>
     <section id="loginScreen" class="login-screen">
@@ -48,8 +48,9 @@
           <article class="summary-card"><span data-i18n="pendingOrders">待處理訂單</span><strong id="pendingOrders">0</strong></article>
           <article class="summary-card"><span data-i18n="purchaseItems">進貨項目</span><strong id="purchaseCount">0</strong></article>
           <article class="summary-card"><span data-i18n="inventory">庫存</span><strong id="inventoryUnits">0</strong></article>
-          <article class="summary-card"><span data-i18n="unpaidCustomers">未付款客戶</span><strong id="unpaidCustomers">0</strong></article>
+          <article class="summary-card"><span data-i18n="unpaidOrders">未收款訂單</span><strong id="unpaidCustomers">0</strong></article>
           <article class="summary-card"><span data-i18n="advanceTotal">代墊總額</span><strong id="advanceTotal">¥0</strong></article>
+          <article class="summary-card"><span data-i18n="grossProfit">毛利</span><strong id="grossProfitSummary">¥0</strong></article>
         </section>
 
         <section class="tabs" aria-label="ERP modules">
@@ -57,9 +58,7 @@
           <button class="tab" data-view="products" type="button" data-i18n="products">商品</button>
           <button class="tab" data-view="purchaseItems" type="button" data-i18n="purchaseItems">進貨</button>
           <button class="tab" data-view="inventory" type="button" data-i18n="inventory">庫存</button>
-          <button class="tab" data-view="packages" type="button" data-i18n="packages">包裹</button>
-          <button class="tab" data-view="shipping" type="button" data-i18n="shipping">出貨</button>
-          <button class="tab" data-view="customers" type="button" data-i18n="customers">客戶</button>
+          <button class="tab" data-view="profit" type="button" data-i18n="profit">獲利</button>
           <button class="tab" data-view="accounting" type="button" data-i18n="accounting">對帳</button>
           <button class="tab" data-view="settings" type="button" data-i18n="settings">設定</button>
         </section>
@@ -68,10 +67,13 @@
           <div class="section-title"><h2 data-i18n="orders">訂單</h2><button class="small-button" data-open-form="orderForm" type="button" data-i18n="addOrder">新增訂單</button></div>
           <form id="orderForm" class="quick-form hidden" data-collection="orders">
             <input data-field="customer" data-i18n-placeholder="customerName" placeholder="客戶姓名" />
+            <input data-field="contact" placeholder="LINE / 電話" />
             <select id="orderProduct" data-field="productId"></select>
             <input id="orderQuantity" data-field="quantity" inputmode="numeric" data-i18n-placeholder="quantity" placeholder="數量" />
             <div class="money-field"><input id="orderUnitPrice" data-field="unitPrice" inputmode="decimal" data-i18n-placeholder="unitPrice" placeholder="單價" /><select data-currency-for="unitPrice"><option value="JPY" data-i18n="jpyCurrency">日幣</option><option value="TWD" data-i18n="twdCurrency">台幣</option></select></div>
-            <select data-field="status"><option value="報價中">報價中</option><option value="待付款">待付款</option><option value="已採購">已採購</option><option value="已入庫">已入庫</option></select>
+            <input data-field="packageNo" data-i18n-placeholder="packageNo" placeholder="包裹編號" />
+            <select data-field="shippingMethod"><option value="">出貨方式</option><option value="空運">空運</option><option value="海運">海運</option><option value="EMS">EMS</option></select>
+            <select data-field="status"><option value="報價中">報價中</option><option value="待付款">待付款</option><option value="已採購">已採購</option><option value="已入庫">已入庫</option><option value="已出貨">已出貨</option><option value="已收款">已收款</option></select>
             <div class="form-total"><span data-i18n="orderTotal">訂單總額</span><strong id="orderTotalPreview">¥0</strong></div>
             <button class="primary-button" type="submit" data-i18n="save">儲存</button>
           </form>
@@ -132,6 +134,17 @@
             <div><span data-i18n="inventoryHistory">庫存紀錄</span><strong id="inventoryLogCount">0</strong></div>
           </div>
           <div id="inventoryList" class="list"></div>
+        </section>
+
+        <section id="profit" class="view">
+          <div class="section-title"><h2 data-i18n="profit">獲利</h2></div>
+          <div class="advance-box profit-stats">
+            <div><span data-i18n="salesRevenue">銷售收入</span><strong id="profitRevenue">¥0</strong></div>
+            <div><span data-i18n="productCost">商品成本</span><strong id="profitCost">¥0</strong></div>
+            <div><span data-i18n="grossProfit">毛利</span><strong id="profitGross">¥0</strong></div>
+            <div><span data-i18n="profitMargin">毛利率</span><strong id="profitMargin">0%</strong></div>
+          </div>
+          <div id="profitList" class="list"></div>
         </section>
 
         <section id="packages" class="view">
@@ -202,10 +215,13 @@
           </form>
           <div class="quick-form settings-form">
             <button id="manualSaveBtn" class="primary-button" type="button" data-i18n="manualSave">手動儲存</button>
+            <button id="createBackupBtn" class="secondary-button" type="button" data-i18n="createOnlineBackup">建立線上備份</button>
+            <button id="loadBackupsBtn" class="secondary-button" type="button" data-i18n="loadOnlineBackups">查看線上備份</button>
             <button id="exportDataBtn" class="secondary-button" type="button" data-i18n="exportData">匯出資料</button>
             <button id="exportExcelBtn" class="secondary-button" type="button" data-i18n="exportExcel">匯出 Excel</button>
             <label class="file-field import-field"><span data-i18n="importData">匯入資料</span><input id="importDataFile" type="file" accept="application/json,.json" /></label>
           </div>
+          <div id="backupList" class="list"></div>
         </section>
       </main>
 
@@ -213,10 +229,10 @@
         <button class="bottom-link active" data-view="orders" type="button" data-i18n="orders">訂單</button>
         <button class="bottom-link" data-view="products" type="button" data-i18n="products">商品</button>
         <button class="bottom-link" data-view="purchaseItems" type="button" data-i18n="purchaseItems">進貨</button>
-        <button class="bottom-link" data-view="inventory" type="button" data-i18n="inventory">庫存</button>
+        <button class="bottom-link" data-view="profit" type="button" data-i18n="profit">獲利</button>
         <button class="bottom-link" data-view="settings" type="button" data-i18n="settings">設定</button>
       </nav>
     </section>
-    <script src="script.js"></script>
+    <script src="script.js?v=25"></script>
   </body>
 </html>

@@ -8,6 +8,7 @@ const dataDir = process.env.DATA_DIR || root;
 const dataFile = path.join(dataDir, "data.json");
 const backupDir = path.join(dataDir, "backups");
 const dailyBackupMs = 24 * 60 * 60 * 1000;
+const backupFilePattern = /^data-[\w-]+\.json$/;
 
 const defaultData = {
   settings: { exchangeRate: 0.22, displayCurrency: "JPY" },
@@ -59,13 +60,15 @@ function timestamp() {
 function writeBackup(reason = "auto") {
   ensureDataFile();
   if (!fs.existsSync(dataFile)) return;
-  fs.copyFileSync(dataFile, path.join(backupDir, `data-${reason}-${timestamp()}.json`));
-  const backups = fs.readdirSync(backupDir).filter((file) => file.endsWith(".json")).sort().reverse();
+  const file = `data-${reason}-${timestamp()}.json`;
+  fs.copyFileSync(dataFile, path.join(backupDir, file));
+  const backups = fs.readdirSync(backupDir).filter((file) => backupFilePattern.test(file)).sort().reverse();
   backups.slice(30).forEach((file) => fs.unlinkSync(path.join(backupDir, file)));
+  return file;
 }
 
 function safeBackupPath(file) {
-  if (!/^data-[\w-]+\.json$/.test(file)) return "";
+  if (!backupFilePattern.test(file)) return "";
   const fullPath = path.join(backupDir, file);
   return fullPath.startsWith(backupDir) ? fullPath : "";
 }
@@ -76,11 +79,28 @@ function normalizeData(data) {
   merged.inventoryLogs = merged.inventoryLogs || [];
   merged.products = (merged.products || []).map((product) => ({ ...product, price: Number(product.price || 0), shippingCost: Number(product.shippingCost || 0), salePrice: Number(product.salePrice || product.price || 0), stock: Number(product.stock || 0), image: product.image || "" }));
   merged.customers = (merged.customers || []).map((customer) => ({ ...customer, paymentStatus: customer.paymentStatus || "未付款" }));
+  const customersByName = new Map((merged.customers || []).map((customer) => [customer.name, customer]));
+  const packagesByCustomer = new Map((merged.packages || []).map((pack) => [pack.customer, pack]));
+  const shippingByCustomer = new Map((merged.shipping || []).map((shipment) => [shipment.customer, shipment]));
   merged.orders = (merged.orders || []).map((order) => {
     const product = (merged.products || []).find((item) => item.id === order.productId || item.name === order.item);
+    const customer = customersByName.get(order.customer) || {};
+    const pack = packagesByCustomer.get(order.customer) || {};
+    const shipment = shippingByCustomer.get(order.customer) || {};
     const quantity = Number(order.quantity || 1);
     const unitPrice = Number(order.unitPrice || product?.price || order.total || 0);
-    return { ...order, productId: order.productId || product?.id || "", item: order.item || product?.name || "", quantity, unitPrice, total: Number(order.total || quantity * unitPrice) };
+    return {
+      ...order,
+      productId: order.productId || product?.id || "",
+      item: order.item || product?.name || "",
+      contact: order.contact || customer.contact || "",
+      packageNo: order.packageNo || pack.no || "",
+      shippingMethod: order.shippingMethod || shipment.method || "",
+      status: order.status || customer.paymentStatus || shipment.status || pack.status || "報價中",
+      quantity,
+      unitPrice,
+      total: Number(order.total || quantity * unitPrice),
+    };
   });
   merged.purchaseItems = (merged.purchaseItems || []).map((item) => {
     const product = (merged.products || []).find((productItem) => productItem.id === item.productId || productItem.name === item.item);
@@ -178,7 +198,18 @@ const server = http.createServer(async (request, response) => {
 
   if (request.url === "/api/backups" && request.method === "GET") {
     ensureDataFile();
-    sendJson(response, 200, { backups: fs.readdirSync(backupDir).filter((file) => file.endsWith(".json")).sort().reverse() });
+    sendJson(response, 200, { backups: fs.readdirSync(backupDir).filter((file) => backupFilePattern.test(file)).sort().reverse() });
+    return;
+  }
+
+  if (request.url === "/api/backups" && request.method === "POST") {
+    try {
+      ensureDataFile();
+      const file = writeBackup("manual");
+      sendJson(response, 200, { ok: true, file });
+    } catch {
+      sendJson(response, 500, { ok: false });
+    }
     return;
   }
 
