@@ -34,6 +34,7 @@ const defaultData = {
     { id: "A-001", productId: "P-001", type: "product", payer: "kosei", note: "", amount: 12800 },
     { id: "A-002", productId: "P-002", type: "product", payer: "cho", note: "", amount: 6800 },
   ],
+  splitPayments: [],
 };
 
 const mimeTypes = {
@@ -77,6 +78,7 @@ function normalizeData(data) {
   const merged = { ...defaultData, ...data, settings: { ...defaultData.settings, ...(data.settings || {}) } };
   merged.purchaseItems = merged.purchaseItems || [];
   merged.inventoryLogs = merged.inventoryLogs || [];
+  merged.splitPayments = merged.splitPayments || [];
   merged.products = (merged.products || []).map((product) => ({ ...product, price: Number(product.price || 0), shippingCost: Number(product.shippingCost || 0), salePrice: Number(product.salePrice || product.price || 0), stock: Number(product.stock || 0), image: product.image || "" }));
   merged.customers = (merged.customers || []).map((customer) => ({ ...customer, paymentStatus: customer.paymentStatus || "未付款" }));
   const customersByName = new Map((merged.customers || []).map((customer) => [customer.name, customer]));
@@ -119,6 +121,7 @@ function normalizeData(data) {
     createdAt: log.createdAt || new Date().toISOString(),
   }));
   merged.payments = (merged.payments || []).map((payment) => ({ ...payment, productId: payment.type === "shipping" ? "" : payment.productId || "", type: payment.type || "product", note: payment.note || "", amount: Number(payment.amount || 0) }));
+  merged.splitPayments = (merged.splitPayments || []).map((payment) => ({ ...payment, receiver: payment.receiver || "kosei", note: payment.note || "", amount: Number(payment.amount || 0), createdAt: payment.createdAt || new Date().toISOString() }));
   return merged;
 }
 
