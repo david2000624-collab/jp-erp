@@ -9,7 +9,7 @@ const translations = {
     save: "儲存", saveSettings: "儲存設定", edit: "修改", delete: "刪除", customerName: "客戶姓名", itemName: "商品名稱", price: "商品金額", salePrice: "售價", averageUnitPrice: "平均單價", paidAmount: "付款金額", paymentNote: "備註", productImage: "商品圖片", selectProduct: "選擇既有商品",
     quantity: "數量", unitPrice: "單價", unitCost: "進貨單價", shippingCost: "運費", transportCost: "交通費", taxCost: "稅金", supplier: "供應商 / 店家", stock: "庫存", orderTotal: "訂單總額", purchaseTotal: "進貨總成本",
     koseiAdvance: "kosei 代墊", choAdvance: "cho 代墊", advanceTwd: "目前幣別", productAdvance: "商品代墊", shippingAdvance: "運費代墊", backupStatus: "自動備份", dailyBackup: "每天", exchangeRate: "日幣換台幣匯率", displayCurrency: "顯示幣別", manualSave: "手動儲存", createOnlineBackup: "建立線上備份", loadOnlineBackups: "查看線上備份", restoreBackup: "還原", exportData: "匯出資料", exportExcel: "匯出 Excel", importData: "匯入資料", savedNow: "已儲存",
-    loginFailed: "帳號或密碼錯誤", noData: "目前沒有資料", paidBy: "付款人", customer: "客戶", method: "方式", contact: "聯絡方式", confirmDelete: "確定要刪除這筆資料嗎？", confirmRestore: "確定要還原這份線上備份嗎？目前資料會先自動備份。", shippingFee: "運費", transportFee: "交通費", taxFee: "稅金", stockIn: "入庫存", addToProduct: "入商品", stocked: "已入庫存", packageNo: "包裹編號", salesRevenue: "銷售收入", productCost: "商品成本", grossProfit: "毛利", profitMargin: "毛利率",
+    loginFailed: "帳號或密碼錯誤", noData: "目前沒有資料", paidBy: "付款人", customer: "客戶", method: "方式", contact: "聯絡方式", confirmDelete: "確定要刪除這筆資料嗎？", confirmRestore: "確定要還原這份線上備份嗎？目前資料會先自動備份。", shippingFee: "運費", transportFee: "交通費", taxFee: "稅金", stockIn: "入庫存", addToProduct: "入商品", stocked: "已入庫存", stockDeducted: "已扣庫存", packageNo: "包裹編號", salesRevenue: "銷售收入", productCost: "商品成本", grossProfit: "毛利", profitMargin: "毛利率", koseiShare: "kosei 分潤", choShare: "cho 分潤", splitProfit: "獲利對分",
     addInventoryLog: "調整庫存", stockOut: "出庫", stockSet: "盤點設定", inventoryNote: "備註", movementType: "類型", inventoryHistory: "庫存紀錄", currentStock: "目前庫存", lowStock: "低庫存", inventoryValue: "庫存價值", salesValue: "可售金額", totalUnits: "總庫存數", beforeStock: "調整前", afterStock: "調整後", operator: "操作人"
   },
   ja: {
@@ -20,7 +20,7 @@ const translations = {
     save: "保存", saveSettings: "設定保存", edit: "編集", delete: "削除", customerName: "顧客名", itemName: "商品名", price: "商品金額", salePrice: "販売価格", averageUnitPrice: "平均単価", paidAmount: "支払金額", paymentNote: "メモ", productImage: "商品画像", selectProduct: "既存商品を選択",
     quantity: "数量", unitPrice: "単価", unitCost: "仕入単価", shippingCost: "送料", transportCost: "交通費", taxCost: "税金", supplier: "仕入先 / 店舗", stock: "在庫", orderTotal: "注文合計", purchaseTotal: "仕入合計",
     koseiAdvance: "kosei 立替", choAdvance: "cho 立替", advanceTwd: "現在通貨", productAdvance: "商品立替", shippingAdvance: "送料立替", backupStatus: "自動バックアップ", dailyBackup: "毎日", exchangeRate: "JPYからTWDのレート", displayCurrency: "表示通貨", manualSave: "手動保存", createOnlineBackup: "オンラインバックアップ作成", loadOnlineBackups: "オンラインバックアップ表示", restoreBackup: "復元", exportData: "データを書き出す", exportExcel: "Excel出力", importData: "データを読み込む", savedNow: "保存しました",
-    loginFailed: "アカウントまたはパスワードが違います", noData: "データがありません", paidBy: "支払者", customer: "顧客", method: "方法", contact: "連絡先", confirmDelete: "このデータを削除しますか？", confirmRestore: "このオンラインバックアップを復元しますか？現在のデータは先に自動保存されます。", shippingFee: "送料", transportFee: "交通費", taxFee: "税金", stockIn: "在庫入庫", addToProduct: "商品に追加", stocked: "入庫済み", packageNo: "荷物番号", salesRevenue: "売上", productCost: "商品原価", grossProfit: "粗利", profitMargin: "粗利率",
+    loginFailed: "アカウントまたはパスワードが違います", noData: "データがありません", paidBy: "支払者", customer: "顧客", method: "方法", contact: "連絡先", confirmDelete: "このデータを削除しますか？", confirmRestore: "このオンラインバックアップを復元しますか？現在のデータは先に自動保存されます。", shippingFee: "送料", transportFee: "交通費", taxFee: "税金", stockIn: "在庫入庫", addToProduct: "商品に追加", stocked: "入庫済み", stockDeducted: "在庫引落済み", packageNo: "荷物番号", salesRevenue: "売上", productCost: "商品原価", grossProfit: "粗利", profitMargin: "粗利率", koseiShare: "kosei 分配", choShare: "cho 分配", splitProfit: "利益折半",
     addInventoryLog: "在庫調整", stockOut: "出庫", stockSet: "棚卸設定", inventoryNote: "メモ", movementType: "種類", inventoryHistory: "在庫履歴", currentStock: "現在在庫", lowStock: "低在庫", inventoryValue: "在庫金額", salesValue: "販売予定額", totalUnits: "総在庫数", beforeStock: "調整前", afterStock: "調整後", operator: "担当者"
   }
 };
@@ -84,6 +84,7 @@ function normalize(data) {
       contact: order.contact || customer.contact || "",
       packageNo: order.packageNo || pack.no || "",
       shippingMethod: order.shippingMethod || shipment.method || "",
+      stockDeducted: Boolean(order.stockDeducted),
       status: order.status || customer.paymentStatus || shipment.status || pack.status || "報價中",
       quantity,
       unitPrice,
@@ -404,7 +405,7 @@ function syncPurchaseCostFromProduct() {
 
 function renderOrders() {
   document.querySelector("#orderList").innerHTML = state.data.orders.map((order) => {
-    const logistics = [order.packageNo ? `${text("packageNo")}: ${order.packageNo}` : "", order.shippingMethod ? `${text("shipping")}: ${order.shippingMethod}` : "", order.contact ? `${text("contact")}: ${order.contact}` : ""].filter(Boolean).join(" / ");
+    const logistics = [order.packageNo ? `${text("packageNo")}: ${order.packageNo}` : "", order.shippingMethod ? `${text("shipping")}: ${order.shippingMethod}` : "", order.contact ? `${text("contact")}: ${order.contact}` : "", order.stockDeducted ? text("stockDeducted") : ""].filter(Boolean).join(" / ");
     return `<article class="item-card"><div class="item-top"><strong>${productName(order.productId, order.item)}</strong><span class="${badgeClass(order.status)}">${order.status}</span></div><span class="meta">${text("customer")}: ${order.customer} / ${order.quantity} x ${money(order.unitPrice)} = ${money(order.total)}</span>${logistics ? `<span class="meta">${logistics}</span>` : ""}<div class="item-actions"><button class="secondary-button" type="button" data-order-status="${order.id}" data-status="已出貨">已出貨</button><button class="secondary-button" type="button" data-order-status="${order.id}" data-status="已收款">已收款</button><button class="secondary-button" type="button" data-edit="orders" data-id="${order.id}">${text("edit")}</button><button class="danger-button" type="button" data-delete="orders" data-id="${order.id}">${text("delete")}</button></div></article>`;
   }).join("") || emptyList();
 }
@@ -460,16 +461,19 @@ function renderAccounting() {
 function renderProfit() {
   const summary = profitSummary();
   const gross = summary.revenue - summary.cost;
+  const share = gross / 2;
   document.querySelector("#profitRevenue").textContent = money(summary.revenue);
   document.querySelector("#profitCost").textContent = money(summary.cost);
   document.querySelector("#profitGross").textContent = money(gross);
   document.querySelector("#profitMargin").textContent = summary.revenue ? `${Math.round((gross / summary.revenue) * 1000) / 10}%` : "0%";
+  document.querySelector("#profitKoseiShare").textContent = money(share);
+  document.querySelector("#profitChoShare").textContent = money(share);
   document.querySelector("#grossProfitSummary").textContent = money(gross);
   document.querySelector("#profitList").innerHTML = state.data.orders.map((order) => {
     const cost = orderCost(order);
     const profit = Number(order.total || 0) - cost;
     const profitClass = profit < 0 ? "pill danger" : "pill blue";
-    return `<article class="item-card profit-card"><div class="item-top"><strong>${productName(order.productId, order.item)}</strong><span class="${profitClass}">${money(profit)}</span></div><span class="meta">${text("customer")}: ${order.customer} / ${text("salesRevenue")}: ${money(order.total)} / ${text("productCost")}: ${money(cost)}</span><span class="meta">${text("quantity")}: ${order.quantity} / ${order.status}</span></article>`;
+    return `<article class="item-card profit-card"><div class="item-top"><strong>${productName(order.productId, order.item)}</strong><span class="${profitClass}">${money(profit)}</span></div><span class="meta">${text("customer")}: ${order.customer} / ${text("salesRevenue")}: ${money(order.total)} / ${text("productCost")}: ${money(cost)}</span><span class="meta">${text("splitProfit")}: kosei ${money(profit / 2)} / cho ${money(profit / 2)}</span><span class="meta">${text("quantity")}: ${order.quantity} / ${order.status}</span></article>`;
   }).join("") || emptyList();
 }
 function renderCurrencyToggle() {
@@ -545,9 +549,12 @@ function upsertFromForm(event, collection) {
   const editingId = form.dataset.editingId;
   if (editingId) {
     state.data[collection] = state.data[collection].map((item) => item.id === editingId ? { ...item, ...values } : item);
+    if (collection === "orders" && values.status === "已出貨") shipOrder(editingId);
     delete form.dataset.editingId;
   } else {
-    state.data[collection].unshift({ id: nextId(config[collection].prefix, state.data[collection]), ...values });
+    const id = nextId(config[collection].prefix, state.data[collection]);
+    state.data[collection].unshift({ id, ...values });
+    if (collection === "orders" && values.status === "已出貨") shipOrder(id);
   }
   form.reset(); syncOrderPriceFromProduct(); syncPurchaseCostFromProduct(); saveData(); renderAll();
 }
@@ -573,6 +580,16 @@ function addInventoryMovement({ productId, type = "in", quantity = 0, note = "" 
     user: state.currentUser,
     createdAt: new Date().toISOString()
   });
+}
+
+function shipOrder(id) {
+  const order = state.data.orders.find((entry) => entry.id === id);
+  if (!order) return;
+  order.status = "已出貨";
+  if (order.stockDeducted) return;
+  if (!productById(order.productId)) return;
+  addInventoryMovement({ productId: order.productId, type: "out", quantity: order.quantity, note: `${text("orders")}: ${order.id} ${text("shipping")}` });
+  order.stockDeducted = true;
 }
 
 function submitInventoryForm(event) {
@@ -704,7 +721,8 @@ document.addEventListener("click", (event) => {
   if (orderStatusButton) {
     const order = state.data.orders.find((item) => item.id === orderStatusButton.dataset.orderStatus);
     if (order) {
-      order.status = orderStatusButton.dataset.status;
+      if (orderStatusButton.dataset.status === "已出貨") shipOrder(order.id);
+      else order.status = orderStatusButton.dataset.status;
       saveData();
       renderAll();
     }
