@@ -488,6 +488,11 @@ h2 {
   font-size: 20px;
 }
 
+.settlement-box strong {
+  font-size: 18px;
+  line-height: 1.25;
+}
+
 .profit-card .pill {
   font-size: 13px;
 }
